@@ -1,0 +1,12 @@
+.cards {
+    display: flex;
+    flex-direction: horizontal;
+    justify-content: center;
+}
+
+.icon {
+    background: white;
+    padding: 5px;
+    border-radius: 50px;
+
+}

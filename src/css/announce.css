@@ -1,0 +1,13 @@
+.TopHead {
+	box-shadow: none;
+	border: 0px solid white;
+}
+#divider {
+	margin-top: 5%;
+}
+#footer-comp {
+	display: flex;
+}
+#corner {
+	margin-left: 50%;
+}

@@ -1,0 +1,26 @@
+.cards {
+    display: flex;
+    flex-direction: horizontal;
+    justify-content: center;
+}
+
+.icon {
+    background: white;
+    padding: 5px;
+    border-radius: 50px;
+
+}
+.column {
+    float:left;
+    width:50%;
+}
+.row:after {
+    content:"";
+    display: table;
+    clear:both;
+}
+.column1 {
+    float:center;
+    width:33.33%;
+    text-align:left;
+}

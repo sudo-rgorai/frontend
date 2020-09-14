@@ -1,0 +1,829 @@
+jQuery(function ($) {
+    var $win = $(window), $doc = $(document), $root = $('html, body');
+    $(document).ready(function () {
+
+        if ($('#birthdate_picker').length > 0) {
+            var birth_value = $('#birthdate_picker').val();
+            var viewOpt = birth_value ? 'days' : 'years';
+            var startOpt = birth_value ? new Date(birth_value) : new Date(80, 0);
+
+            $('#birthdate_picker').datepicker({
+                dateFormat: 'd MM yyyy',
+                firstDay: 1,
+                minDate: new Date(1900, 0),
+                maxDate: new Date(),
+                view: viewOpt,
+                startDate: startOpt,
+                language: _lang
+            });
+        }
+
+        telephoneValidation();
+        emailValidation();
+        usernameValidation();
+    });
+    $('#country_id').on('change', function () {
+        var country_id = $(this).val();
+
+        $.ajax({
+            url: _root + '/academy/register/get-time-zone',
+            type: "POST",
+            dataType: 'json',
+            data: {
+                country_id: country_id
+            }
+        }).done(function (resp) {
+            $('#timezone').val(resp[0]);
+        }).fail(function () {
+
+        });
+
+    });
+
+
+    // VALIDATORS
+    // Email
+    if ($('#userForm').length > 0) {
+
+        $.validator.setDefaults({
+            ignore: []
+        });
+
+        $('#userForm').validate({
+            errorElement: 'span',
+            highlight: function (element) {
+                $(element).parent().addClass("has-warning");
+            },
+            unhighlight: function (element) {
+                $(element).parent().removeClass("has-warning");
+            },
+            errorClass: "text-warning",
+            success: 'valid',
+            invalidHandler: function (form, validator) {
+                // Get all tab hrefs
+                var all_tab_hrefs = [];
+                $('.nav-tabs a[data-toggle="tab"]').each(function (index) {
+                    all_tab_hrefs.push($(this).attr('href'));
+                });
+
+                //If element is in a tab append error to tab link 
+                for (var i in validator.invalid) {
+                    var form_element = $('#userForm').find('[name="' + i + '"]');
+                    var formTabsBox = form_element.parents('.tab-pane:first');
+                    if (formTabsBox.length > 0) {
+                        $('[href="#' + formTabsBox.attr('id') + '"]').addClass('error');
+                        // Remove tabs witch have error class
+                        all_tab_hrefs.splice(all_tab_hrefs.indexOf($('[href="#' + formTabsBox.attr('id') + '"]').attr('href')), 1);
+                    }
+                }
+
+                // Remove error class from tabs witch haven't error elements inside
+                for (var u in all_tab_hrefs) {
+                    $('.nav-tabs a[href="' + all_tab_hrefs[u] + '"]').removeClass('error');
+                }
+
+                var index_href = '';
+                $('.nav-tabs a[data-toggle="tab"]').each(function (index) {
+                    if ($(this).hasClass('error') && !index_href) {
+                        // Show tab with same href as "tab-href"
+                        $('.nav-tabs a[href="' + $(this).attr('href') + '"]').tab('show');
+                        index_href = index + 1;
+                    }
+                });
+
+                if (index_href) {
+                    var stepRegex = new RegExp(/\/tab-step\/([0-9]*)/g);
+                    var stepRegexMatch = stepRegex.exec(location.href);
+                    var newHistoryHref = location.href;
+
+                    // Get filterURL_id before add "tab-step" to history
+                    if (newHistoryHref.indexOf('?s=') > -1) {
+                        var filterURL_id = newHistoryHref.substring(newHistoryHref.indexOf('?s='));
+                        newHistoryHref = newHistoryHref.substring(0, window.location.href.indexOf('?s='));
+                    }
+
+                    if (stepRegexMatch != undefined) {
+                        newHistoryHref = newHistoryHref.replace(/(tab-step\/[0-9]*)/, 'tab-step/' + index_href);
+                    } else {
+                        newHistoryHref = newHistoryHref.replace(/\/$/, ''); // clear last '/' in url
+                        newHistoryHref = newHistoryHref + '/tab-step/' + index_href;
+                    }
+
+                    if (filterURL_id != undefined) {
+                        newHistoryHref = newHistoryHref + filterURL_id;
+                    }
+
+                    history.pushState({}, window.title, newHistoryHref);
+                }
+
+            }
+
+        });
+
+        // First name field rules
+        $('#fname').rules('add', {
+            required: true,
+            messages: {
+                required: t('ENTER_FIRST_NAME'),
+            }
+        });
+        if(_settings.module_users_city_property == '1') {
+            // First name field rules
+            $('#city_id').rules('add', {
+                required: true,
+                messages: {
+                    required: t('PLEASE_ENTER_CITY'),
+                }
+            });
+        }
+        if(_settings.module_users_mname == '1') {
+            // Middle name field rules
+            $('#mname').rules('add', {
+                required: true,
+                messages: {
+                    required: t('ENTER_MIDDLE_NAME'),
+                }
+            });
+        }
+        // Last name field rules
+        $('#lname').rules('add', {
+            required: true,
+            messages: {
+                required: t('ENTER_LAST_NAME'),
+            }
+        });
+
+        // Country field rules
+        $('#country_id').rules('add', {
+            required: true,
+            messages: {
+                required: t('PLEASE_ENTER_YOUR_COUNTRY')
+            }
+        });
+
+        // Timezone field rules
+        $('#timezone').rules('add', {
+            required: true,
+            messages: {
+                required: t('PLEASE_ENTER_YOUR_TIMEZONE')
+            }
+        });
+
+        if ($('#old_password').length > 0) {
+            // New password field rules
+            $('#new_password').rules('add', {
+                required: function (element) {
+                    return $("#old_password").val() != "";
+                },
+                messages: {
+                    required: t('PLEASE_ENTER_NEW_PASSWORD')
+                }
+            });
+        }
+
+        if ($('#position_id').length > 0) {
+            // Position field rules
+            $('#position_id').rules('add', {
+                required: true,
+                messages: {
+                    required: t('PLEASE_SELECT_POSITION')
+                }
+            });
+        }
+
+        if ($('#department_id').length > 0) {
+            // Department field rules
+            $('#department_id').rules('add', {
+                required: true,
+                messages: {
+                    required: t('PLEASE_SELECT_DEPARTMENT')
+                }
+            });
+        }
+
+        // Birthdate validate
+        $.validator.addMethod(
+                "birthdate_validate",
+                function (value, element) {
+                    var parsed_date = value.split('-');
+                    var date = parseInt(parsed_date[2]);
+                    var month = parseInt(parsed_date[1]);
+                    var year = parseInt(parsed_date[0]);
+
+                    var cur_date = new Date();
+                    var user_date = new Date(year, month, date);
+                    return this.optional(element) || user_date < cur_date;
+                },
+                t('PLEASE_ENTER_YOUR_BIRTHDATE')
+                );
+        var birthdate_required = false;
+        if(_settings.module_users_birthdate_required == '1') {
+            birthdate_required = true;
+        }
+        // Birthdate field rules
+        if ($('#birthdate_inp').length > 0) {
+            $('#birthdate_inp').rules('add', {
+                required: birthdate_required,
+                birthdate_validate: true,
+                messages: {
+                    required: t('PLEASE_ENTER_YOUR_BIRTHDATE')
+                }
+            });
+        }
+
+        // Email and username field rules
+        $('#date,#month,#year').on('change', function () {
+            emailValidation();
+            usernameValidation();
+        });
+
+        // Username validation
+        $('#user_email,#username').on('change', function () {
+            usernameValidation();
+        });
+
+        $.validator.addMethod(
+                "phone_regex",
+                function (value, element) {
+                    var regexp = new RegExp(/^[ ()0-9+.x-]+$/);
+                    return this.optional(element) || regexp.test(element.value);
+                },
+                t('PERMITTED_TELEPHONE_SYMBOLS')
+                );
+
+
+        // telephone field rules
+        $('#date,#month,#year').on('change', function () {
+            telephoneValidation();
+        });
+
+
+        $('#userForm').on('click', '.btn-sm', function () {
+            if ($('#new_password').val() != '') {
+                $('#new_password').rules('add', {
+                    required: true,
+                    minlength: 6,
+                    messages: {
+                        required: t('INVALID_PASSWORD'),
+                        minlength: t('INVALID_PASSWORD')
+                    }
+                });
+
+                $('#re_password').rules('add', {
+                    required: true,
+                    equalTo: "#new_password",
+                    minlength: 6,
+                    messages: {
+                        required: t('INVALID_PASSWORD'),
+                        minlength: t('INVALID_PASSWORD'),
+                        equalTo: t('CONFIRM_PASSWORD')
+                    }
+                });
+                if ($('#old_password').length > 0) {
+                    $('#old_password').rules('add', {
+                        required: true,
+                        minlength: 6,
+                        messages: {
+                            required: t('INVALID_PASSWORD'),
+                            minlength: t('INVALID_PASSWORD')
+                        }
+                    });
+                }
+            } else {
+                $("#re_password").rules("remove", "required minlength equalTo");
+                $("#new_password").rules("remove", "required minlength");
+                if ($('#old_password').length > 0) {
+                    $("#old_password").rules("remove", "required minlength");
+                }
+            }
+        });
+//		$('#providerForm').on('submit',function(){
+//			 var $this = $(this).find('textarea');
+//			 $this.html($this.html().replace(/&nbsp;/g, ''));
+//		});
+        $('#submitPersonalForm').on('click', function () {
+            $('#userForm').submit();
+        });
+
+        $('#re_password, #new_password').val('');
+    }
+
+
+    var jcrop_api;
+
+    //CROP PLUGIN
+    // initJcrop();
+
+    function initJcrop(callback) {
+        // Invoke Jcrop in typical fashion
+        $('img#profile_pic').Jcrop({
+            allowSelect: false,
+            aspectRatio: 1 / 1,
+            onChange: showCoords,
+            onSelect: showCoords
+        }, function () {
+            jcrop_api = this;
+            var pictureWidth = $('img#profile_pic').width(),
+                pictureHeight = $('img#profile_pic').height(),
+                neededHeight = $('.picture_holder').width(),
+                centerX = 0,
+                centerY = 0;
+            if (pictureWidth > pictureHeight) {
+                centerX = (pictureWidth - pictureHeight) / 2;
+            }
+            if (pictureWidth < pictureHeight) {
+                centerY = (pictureHeight - neededHeight) / 2;
+            }
+            jcrop_api.animateTo([ centerX, centerY, pictureWidth, pictureHeight ]);
+            callback();
+        });
+
+    };
+
+    function showCoords(c) {
+        $('#crop_x1').val(c.x);
+        $('#crop_x2').val(c.x2);
+        $('#crop_y1').val(c.y);
+        $('#crop_y2').val(c.y2);
+        $('#display_width').val($('img#profile_pic').width());
+
+    };
+    //END CROP
+
+    //Picture upload
+    $('#fileupload').fileupload({
+        dataType: 'json',
+        done: function (e, data) {
+            $.each(data.result.files, function (index, file) {
+                if (file.error) {
+                    alert(t(file.error));
+                    return;
+                }
+
+                $('#upload_picture').val(file.name);
+                $('#uploadresults').append('<div class="hidden"><img style="width: 100%;" src="' + _media + '/users/' + $('#uploadresults').data('userid') + '/picture/' + file.name + '"  id="profile_pic" /></div>');
+                
+                $('#profile_pic').load(function () {
+                    if (jcrop_api) {
+                        jcrop_api.destroy();
+                    }
+
+                    initJcrop(function () {
+                        setTimeout(function() {
+                            $('#userForm').submit();
+                        }, 100);
+                    });
+                });
+            });
+        },
+        progressall: function (e, data) {
+            //var progress = parseInt(data.loaded / data.total * 100, 10);
+            //$('#progress .bar').css('width', progress + '%');
+        }
+    });
+
+    // Picture delete
+    $doc.on('click', '#delete_picture', function () {
+        $.postJSON(_root + '/academy/personal/removepicture', {id: $('#uploadresults').data('userid')}).done(function (data) {
+            if (data.success == 1) {
+                // $('#uploadresults').html('<img src="' + _root + '/img/default/vcl/user_default.png" />');
+                $('#upload_picture').val('');
+                $('#userForm').submit();
+            }
+        });
+    });
+
+    function telephoneValidation() {
+        if ($('#check_phone_validation').val()) {
+            // Value is 1 when user has role Teacher or Parent, else value is 2 - User
+            // Value is 3 when user is SuperAdmin or Admin
+            if($('#check_phone_validation').val() != 3){
+                var tel_required = false;
+                if(_settings.module_users_telephone_required == '1') {
+                    tel_required = true;
+                }
+                if ($('#check_phone_validation').val() == 1) {
+                    $('#tel').rules('add', {
+                        required: tel_required,
+                        phone_regex: true,
+                        minlength: 9,
+                        maxlength: 30,
+                        messages: {
+                            required: t('PLEASE_FILL_YOUR_PHONE'),
+                            minlength: t('TELEPHONE_NINE_DIGITS_OR_MORE') + '.',
+                            maxlength: t('TELEPHONE_CANNOT_BE_MORE_THAN') + '.'
+                        }
+                    });
+                } else {
+                    var years = getUserYears();
+                    if (years != undefined) {
+                        // if user is over 18 years old rules for telephone number will be added
+                        // else they will be removed
+                        if (years >= 18) {
+                            $('#tel').rules('add', {
+                                required: tel_required,
+                                phone_regex: true,
+                                minlength: 9,
+                                maxlength: 30,
+                                messages: {
+                                    required: t('PLEASE_FILL_YOUR_PHONE'),
+                                    minlength: t('TELEPHONE_NINE_DIGITS_OR_MORE') + '.',
+                                    maxlength: t('TELEPHONE_CANNOT_BE_MORE_THAN') + '.'
+                                }
+                            });
+                        } else {
+                            $('#tel').rules('remove', 'required phone_regex minlength maxlength');
+                        }
+                    }
+                }
+            }
+        }
+    }
+
+    function emailValidation() {
+        var required = true;
+        if(_settings.module_users_auth_email_verification == "false") {
+            required = false;
+        }
+        var years = getUserYears();
+        if (years != undefined && years >= 18) {
+            $('#user_email').rules('add', {
+                required: required,
+                email: true,
+                messages: {
+                    required: t('YOUR_EMAIL_IS_NOT_VALID'),
+                    email: t('YOUR_EMAIL_IS_NOT_VALID')
+                }
+            });
+        } else {
+            $('#user_email').rules('remove', 'required email');
+        }
+    }
+
+    function usernameValidation() {
+        var years = getUserYears();
+        if (years != undefined && years < 18) {
+            $('#username').rules('add', {
+                required: $('#username').val() == "" && $('#user_email').val() == "",
+                messages: {
+                    required: t('PLEASE_ENTER_USERNAME')
+                }
+            });
+        } else {
+            $('#username').rules('remove', 'required');
+        }
+    }
+
+    function getUserYears() {
+        var user_date = $('#date').val();
+        var user_month = $('#month').val();
+        var user_year = $('#year').val();
+
+        var dateNum = parseInt(user_date);
+        var monthNum = parseInt(user_month);
+        var yearNum = parseInt(user_year);
+
+        if (dateNum > 0 && monthNum > 0 && yearNum > 0) {
+            var today = new Date();
+            var birthDate = new Date(yearNum, monthNum, dateNum);
+            var years = Math.floor((today - birthDate) / 31536000000);
+            return years;
+        } else {
+            return;
+        }
+    }
+
+    function daysInMonth(month, year) {
+        return new Date(year, month + 1, 0).getDate();
+    }
+
+    function monthChanged() {
+        var month = $('#month').val() - 1, year = +$('#year').val();
+        var days;
+
+        if (month === -2 || year === -1) {
+            days = 31;
+        }
+        else {
+            days = daysInMonth(month, year);
+        }
+
+        var diff;
+
+        // Add/Remove options
+        diff = $('#date > option').length - (days + 1);
+
+        if (diff > 0) { // Remove
+            $('#date > option').slice(days + 1).remove();
+        }
+
+        if (diff < 0) { // Add
+            for (var i = $('#date > option').length; i <= days; i++) {
+                $('<option>').attr('value', i).text(i).appendTo('#date');
+            }
+        }
+    }
+    
+    monthChanged(); // On document ready
+    $('#month').on('change', monthChanged); // On month change
+    $('#year').on('change', monthChanged); // On year change (for leap years)
+
+    $('#birthdate select').on('change', function () {
+        var user_date = $('#date').val();
+        var user_month = $('#month').val();
+        var user_year = $('#year').val();
+
+        var monthNum = parseInt(user_month);
+        var yearNum = parseInt(user_year)
+
+        if (monthNum > 0 && yearNum > 0) {
+            $('#birthdate').find('.birthdate').attr('value', user_year + '-' + user_month + '-' + user_date);
+            $('#userForm').validate().element('#birthdate_inp');
+        }
+    });
+    
+    var date = new Date();
+    dateSelector.init('date',
+        {id: 'month', //}, /* if repopulation for month is necessary 
+         list: [t('REGISTER_JANUARY'),
+                t('REGISTER_FEBRUARY'),
+                t('REGISTER_MARCH'),
+                t('REGISTER_APRIL'),
+                t('REGISTER_MAY'),
+                t('REGISTER_JUNE'),
+                t('REGISTER_JULY'),
+                t('REGISTER_AUGUST'),
+                t('REGISTER_SEPTEMBER'),
+                t('REGISTER_OCTOBER'),
+                t('REGISTER_NOVEMBER'),
+                t('REGISTER_DECEMBER')]},//*/
+    {id: 'year', max: date.getFullYear() - (_login_age_restriction == 'true' ? 18 : 0), min: date.getFullYear() - 100},  //if repopulation foryear is necessary {max: 2000, min: 1915},
+    t('REGISTER_DATE'), t('REGISTER_MONTH'), t('REGISTER_YEAR'));
+    
+    dateSelector.populate(); // init population
+    
+    var birthdate = $('#birthdate').find('.birthdate').attr('value');
+
+    if (birthdate && birthdate.length > 0) {
+        var parsed_date = birthdate.split('-');
+
+        $('#date').val(parsed_date[2]);
+        $('#month').val(parsed_date[1]);
+        $('#year').val(parsed_date[0]);
+    }
+    
+    dateSelector.populate(); // must repopulate for proper selection
+
+    // parent/child request remove
+    $('#childparent').on('click', '[data-request="remove_request"]', function (e) {
+        bootbox.confirm(t('ARE_YOU_SURE', null, false), function (result) {
+            if (result) {
+                $.ajax({
+                    type: "POST",
+                    url: _root + '/unsolved-pending-request-remove',
+                    data: {email: $(e.target).attr('data-email')},
+                    dataType: 'json'
+                })
+                        .done(function (msg) {
+                            if (msg.success != undefined) {
+                                location.reload();
+                            }
+                        });
+            }
+        });
+
+        return false;
+    });
+
+    // parent/child break connection
+    $('#childparentForm').on('click', '[data-request="remove"]', function (e) {
+        bootbox.confirm(t('ARE_YOU_SURE', null, false), function (result) {
+            if (result) {
+                $.ajax({
+                    type: "POST",
+                    url: _root + '/unsolved-request-remove',
+                    data: {user_id: $(e.target).attr('data-user_id')}
+                })
+                        .done(function (msg) {
+                            msg = JSON.parse(msg);
+
+                            if (msg.success != undefined) {
+                                location.reload();
+                            }
+                        });
+            }
+        });
+
+        return false;
+    });
+
+    if ($('#invitation_email').length > 0) {
+
+        $.validator.setDefaults({
+            ignore: []
+        });
+
+        $('#childparentForm').validate({
+            errorElement: 'span',
+            highlight: function (element) {
+                $(element).parent().addClass("has-warning");
+            },
+            unhighlight: function (element) {
+                $(element).parent().removeClass("has-warning");
+            },
+            errorClass: "text-warning",
+            success: 'valid',
+            invalidHandler: function (form, validator) {
+                //If element is in a tab append error to tab link 
+                for (var i in validator.invalid) {
+                    var form_element = $('#userForm').find('[name="' + i + '"]');
+                    var formTabsBox = form_element.parents('.tab-pane:first');
+                    if (formTabsBox.length > 0) {
+                        $('[href="#' + formTabsBox.attr('id') + '"]').addClass('error');
+                    }
+                }
+            }
+
+        });
+
+        $('#invitation_email').rules('add', {
+            required: true,
+            email: true,
+            messages: {
+                required: t('YOUR_EMAIL_IS_NOT_VALID'),
+                email: t('YOUR_EMAIL_IS_NOT_VALID')
+            }
+        });
+    }
+
+    if ($('.btn-cancel').length > 0) {
+        $('#userForm').on('click', '.btn-cancel', function () {
+            //fix for cases where the link ends with # and breaks the page reload on cancel
+            var locationHrefStripped = location.href;
+            if (locationHrefStripped.slice(-1) === '#') {
+                locationHrefStripped = locationHrefStripped.substr(0, -1);
+            }
+
+            location.href = locationHrefStripped;
+        });
+    }
+
+
+});
+
+jQuery(document).ready(function () {
+    $('.ckeditor').each(function () {
+        var id = $(this).attr('id');
+
+        initCKEditor(id);
+    });
+
+
+    ////check if  user has teacher role and is in status deleted
+    //var deleted = false;
+    //var teacher = false;
+    //$('select[name="user[status_id]"]').children().each(function () {
+    //    if ($(this).attr('selected') == 'selected') {
+    //        if ($(this).attr('value') == 4) {
+    //            deleted = true;
+    //            return;
+    //        }
+    //    }
+    //});
+
+    //$('input[name="user[roles][]"]').each(function () {
+    //    if (($(this).attr('value') == '6') && ($(this).attr('checked') == 'checked')) {
+    //        teacher = true;
+    //        return;
+    //    }
+    //});
+    //
+    //if (teacher && deleted) {
+    //    $('#teacher_courses_all').toggleClass('hidden', false);
+    //} else {
+    //    $('#teacher_courses_all').toggleClass('hidden', true);
+    //}
+
+    ////check if  user has teacher role and is in status deleted
+    //$('#admin').on('change', 'select[name="user[status_id]"]', function () {
+    //    if ($(this).val() == 4) {
+    //        deleted = true;
+    //    } else {
+    //        deleted = false;
+    //    }
+    //
+    //    if (teacher && deleted) {
+    //        $('#teacher_courses_all').toggleClass('hidden', false);
+    //    } else {
+    //        $('#teacher_courses_all').toggleClass('hidden', true);
+    //    }
+    //});
+
+    //$('#admin').on('change', 'input[name="user[roles][]"]', function () {
+    //    if ($(this).val() == 6) {
+    //        if ($(this).is(":checked")) {
+    //            teacher = true;
+    //        } else {
+    //            teacher = false;
+    //        }
+    //    }
+    //
+    //    if (teacher && deleted) {
+    //        $('#teacher_courses_all').toggleClass('hidden', false);
+    //    } else {
+    //        $('#teacher_courses_all').toggleClass('hidden', true);
+    //    }
+    //});
+
+    //This hide submit and cancel buttons when 'user_groups', 'user_courses' or  'connected_users' is selected
+    $("a[href='#user_groups'], a[href='#user_courses'], a[href='#connected_users']").on('show.bs.tab', function () {
+        $('#sbm_butons').addClass('hidden');
+    });
+
+    $("a[href='#user_groups'], a[href='#user_courses'], a[href='#connected_users']").on('hide.bs.tab', function () {
+        $('#sbm_butons').removeClass('hidden');
+    });
+
+    if ($("a[href='#user_groups'], a[href='#user_courses'], a[href='#connected_users']").parent().hasClass('active')) {
+        $('#sbm_butons').addClass('hidden');
+    } else {
+        $('#sbm_butons').removeClass('hidden');
+    }
+
+
+
+    $('#country-list').customDropdown({
+        title: t('REGISTER_COUNTRY'),
+        related_input_id: "country",
+        bootstrap_classes: ['form-control']
+    });
+
+    //teacher video
+
+    try{
+        $('#teacherVideo').fileupload({
+            dataType: 'json',
+            add: function (e, data) {
+               var uploadErrors = [];
+
+               if (window.File) {
+                    var acceptFileTypes = /(\.|\/)(mp4|ogg|webm|ogv|avi|mkv|wmv|m4p|m4v|mpg|mpeg|3gp)$/i;
+
+                    if (data.originalFiles[0]['type'].length && !acceptFileTypes.test(data.originalFiles[0]['type'])) {
+                        uploadErrors.push(t('NOT_AN_ACCEPTED_FILE_TYPE_TEACHER_VIDEO'));
+                    }
+
+                
+                    if (data.originalFiles[0]['size'] > 300000000) {
+                        uploadErrors.push(t('FILESIZE_IS_TOO_BIG_TECHER_VIDEO'));
+                    }
+
+                    if (uploadErrors.length > 0) {
+                        alertError(uploadErrors.join("\n"));
+                    }                
+                }
+
+                if (!uploadErrors.length) {
+                    $('.filename').html(data.files[0].name);
+                    data.submit();
+                }
+            },
+            done: function (e, data) {
+                $.each(data.result.files, function (index, file) {
+                     if (file.error) {
+                        alertError(file.error);
+                        return;
+                    }
+                     $('#add-button').removeClass('btn-danger').addClass('btn-success')
+                            .addClass('disabled')
+                            .find('i.fa').addClass('fa fa-check');
+                        
+                    setTimeout(function(){document.location.reload();}, 1000)
+                });
+            },
+            progressall: function(e, data){
+                var progress = parseInt(data.loaded / data.total * 100, 10) + '%';
+                $('.btn-progress-bar').animate({'width': progress}, 500);
+            }
+        });
+    }catch(e){
+        
+    }
+    
+    // Load user groups
+    if($('#user_groups_list').length > 0) {
+        $('#user_groups_list').loadBox(_root+'/academy/personal/user-groups', {}, {}, function(){});
+    }
+    //Load user courses
+    if($('#user_courses_list').length > 0) {
+        $('#user_courses_list').loadBox(_root+'/academy/personal/user-courses', {request_user_id: $('#request_user_id').val()}, {}, function(){});
+    }
+
+
+	// Load user_quizes_results_list box
+    if ($('.user_quizes_results_list').length > 0) {
+        $('.user_quizes_results_list').loadBox(_root + '/quizzes/results', {user_id: $('#request_user_id').val()}, {}, function () {});
+    }
+
+
+});

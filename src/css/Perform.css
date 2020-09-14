@@ -1,0 +1,8 @@
+.sideBar {
+	background-color: white;
+	box-shadow: 0 4px 8px 0 rgba(191, 107, 250, 0.2),
+		0 6px 20px 0 rgba(191, 107, 250, 0.19);
+}
+.sideBar:hover {
+	background-color: rgba(230, 230, 230, 0.562);
+}

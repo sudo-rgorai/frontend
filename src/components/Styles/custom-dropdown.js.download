@@ -1,0 +1,106 @@
+$(document).ready(function(){
+    var CustomDropdown = function(element, options) {
+        var self = this,
+            options = $.extend( {}, CustomDropdown.defaults, options );
+
+
+        self.$ul = element;
+        self.related_input_id = options['related_input_id'];
+        self.init(options);
+        self.input = $('#' + options['related_input_id']);
+        self.wrapper = self.$ul.parent();
+        self.toggle_container = self.wrapper.find('.dropdown-toggle');
+        self.selected = self.toggle_container.find('.selected');
+
+        self.$ul.find('a').on('click', function(event){
+            var newText = $(this).html();
+
+            //change selected item 
+            self.selected.html(newText);
+
+            if (!self.selected.hasClass('active') && $(this).attr('data-value') != '') {
+                self.toggle_container.addClass('active');
+            } else if ( $(this).attr('data-value') === '' ) {
+                self.toggle_container.removeClass('active');
+            }
+
+            //update filter
+            if (options['related_input_id']) {
+                self.input.val($(this).data('value'));
+                self.input.trigger('change');
+                options['onChange'](event);
+            }
+        });
+        
+        if (options['related_input_id']) {
+            self.$ul.find('a').each(function() {
+                var optionId = self.related_input_id + '-' + $(this).attr('data-value');
+                $(this).attr('id', optionId);
+            });
+        }
+
+        self.update(); 
+        self.$ul.removeClass('hidden');
+    };
+
+    
+    CustomDropdown.prototype.init = function(options) {
+        var self = this,
+            $container_model = $('<div/>').addClass('dropdown custom-dropdown'),
+            $button_content_model = '<span class="selected">' + options['title'] + '</span><span class="caret"></span>',
+            $selected_model = $('<button type="button" class="dropdown-toggle" data-toggle="dropdown" aria-haspopup="true" aria-expanded="false">').html($button_content_model);
+
+            options['dropdown_classes'].forEach(function(className){
+                $container_model.addClass(className);
+            });
+
+            options['bootstrap_classes'].forEach(function(className){
+                $selected_model.addClass(className);
+            });
+
+
+        self.$ul.addClass('dropdown-menu').addClass('scrollable-menu').wrap($container_model);
+        self.$ul.before($selected_model);
+
+        if (options['custom_scrollbar']) {
+            self.$ul.height(options['custom_scrollbar_height']);
+            self.$ul.perfectScrollbar({minScrollbarLength: 30});
+
+            self.$ul.on('mouseover', function() {
+                    if (!$(this).find('.ps-scrollbar-y-rail').height()) {
+                        $(this).perfectScrollbar('update');
+                    }
+                });
+            }
+    };
+
+    CustomDropdown.prototype.update = function() {
+        var self = this;
+        if(self.input.val() ) {
+            var selectedValueId = '#' + self.related_input_id + '-' + self.input.val();
+            self.selected.html($(selectedValueId).html());
+            self.toggle_container.addClass('active');
+        }
+    };
+
+    CustomDropdown.defaults = {
+        title: t("CHOOSE"),
+        dropdown_classes: [],
+        bootstrap_classes: [],
+        related_input_id: undefined,
+        is_crud_field: false,
+        custom_scrollbar: true,
+        custom_scrollbar_height: 200,
+        onChange: function() {}
+
+    }
+
+    $.fn.customDropdown = function(options) {
+        var options = options || {};
+        return this.each(function () {
+            if (!$(this).data('custom_dropdown')) {
+                $(this).data('custom_dropdown', new CustomDropdown($(this), options));
+            }
+        });
+    }
+});

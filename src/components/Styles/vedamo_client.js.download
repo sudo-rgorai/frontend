@@ -1,0 +1,385 @@
+document.addEventListener('DOMContentLoaded', function() {
+	
+	var vedamo_analytic_listener_url;
+	var vedamo_analytic_search_params;
+	var vedamo_analytic_isonfocus;
+	var vedamo_analytic_stop_timer;
+	var vedamo_analytic_time_spent_timeout;
+	var vedamo_new_window_holder;
+	var vedamo_visit_id;
+	var vedamo_analytic_page_object = {};
+	
+	
+	
+	function vedamo_analytic_init(){
+		
+		
+		var deployment_env                 = document.getElementsByTagName('body')[0].dataset.analytic_deploy_env || 'production'; 
+		
+		if (deployment_env == 'win' || getQueryVars().bot_spectator){
+			return;
+		}
+		
+		
+		
+		vedamo_analytic_listener_url       = 'https://analytics-' +deployment_env +'.vedamo.com/index.html';
+		vedamo_analytic_search_params      = {};
+		vedamo_analytic_isonfocus          = true;
+		vedamo_analytic_stop_timer         = false;
+		vedamo_analytic_time_spent_timeout = 0;
+		vedamo_new_window_holder           = null;
+		vedamo_visit_id                    = vedamo_analytic_uuidv4();
+		
+		
+		if (location.search){
+			if (typeof URLSearchParams === 'function'){
+				function vedamo_analytic_params_to_object(entries) {
+					  var result = {};
+					  
+					  while (item = entries.next(), !item.done) { // Iterate like this because of IE!
+						  result[item.value[0]] = item.value[1];
+					  }
+					  
+					  return result;
+				}
+				
+				var params = new URLSearchParams(location.search);
+				var entries = params.entries();
+				
+				var vedamo_analytic_search_params = vedamo_analytic_params_to_object(entries);
+				
+			} else {
+				// IE support
+				var vedamo_analytic_search_params = location.search.substring(1).split("&").reduce(function(prev, curr, i, arr) {
+					var p = curr.split("=");
+					prev[decodeURIComponent(p[0])] = decodeURIComponent(p[1]);
+					return prev;
+				}, {});
+				
+			}
+
+		}	
+		
+
+		// Guid cookie
+		var vedamo_analytic_guid = vedamo_analytic_get_cookie('vedamo_analytic_guid');	
+		if (!vedamo_analytic_guid){
+				vedamo_analytic_guid = vedamo_analytic_uuidv4();
+				vedamo_analytic_set_cookie('vedamo_analytic_guid', vedamo_analytic_guid, 365);
+		}
+		
+		// Guid cookie
+		var vedamo_analytic_user_id = vedamo_analytic_get_cookie('vedamo_analytic_uid') || 0;	
+		
+		// Session id
+		if (window.sessionStorage){
+			var vedamo_analytic_bsession = sessionStorage.getItem("vedamo_analytic_bsession");
+			if (!vedamo_analytic_bsession){
+				vedamo_analytic_bsession = vedamo_analytic_uuidv4();
+				sessionStorage.setItem("vedamo_analytic_bsession", vedamo_analytic_bsession);
+			}
+			
+		}
+		
+		vedamo_analytic_page_object = {
+			guid                : vedamo_analytic_guid,
+			bsession            : vedamo_analytic_bsession,
+			visit_id            : vedamo_visit_id,
+			user_id             : vedamo_analytic_user_id,
+			operation           : "C",
+			guser_id            : "",
+			//author              : $('meta[name=author]').length > 0 && $('meta[name=author]').attr("content") != "" ? $('meta[name=author]').attr("content") : "",
+			author              : document.querySelector("meta[name='author']") ? document.querySelector("meta[name='author']").getAttribute("content") : "",
+			//title               : $('meta[name=article_title]').length > 0 && $('meta[name=article_title]').attr("content") != "" ? $('meta[name=article_title]').attr("content"): "",
+			title               : document.querySelector("meta[name='article_title']") ? document.querySelector("meta[name='article_title']").getAttribute("content") : "",
+			//title_id            : $('meta[name=article_id]').length > 0 && $('meta[name=article_id]').attr("content") != "" ? $('meta[name=article_id]').attr("content") : 0,
+			title_id            : document.querySelector("meta[name='article_id']") ? document.querySelector("meta[name='article_id']").getAttribute("content") : "",
+			time_spent          : 0,
+			url                 : location.href,
+			utm_source          : vedamo_analytic_search_params.utm_source ? vedamo_analytic_search_params.utm_source : "",
+			utm_medium          : vedamo_analytic_search_params.utm_medium ? vedamo_analytic_search_params.utm_medium : "",
+			utm_campaign        : vedamo_analytic_search_params.utm_campaign ? vedamo_analytic_search_params.utm_campaign : "",
+			utm_term            : vedamo_analytic_search_params.utm_term ? vedamo_analytic_search_params.utm_term : "",
+			utm_content         : vedamo_analytic_search_params.utm_content ? vedamo_analytic_search_params.utm_content : "",
+			next_url            : "",
+			referrer            : (document.referrer || "")
+		}
+		
+		
+		window.onblur = function(e){
+		  vedamo_analytic_isonfocus =false;
+		  vedamo_analytic_stop_timer = true;
+		}  
+		
+		window.onmouseleave = function(e){
+			vedamo_analytic_isonfocus =false;
+			vedamo_analytic_stop_timer = true;
+		};
+		
+		window.onfocus = function(e){
+		  vedamo_analytic_isonfocus=true;
+		  vedamo_analytic_stop_timer = false;
+		  vedamo_analytic_time_spent_timeout_function();
+		}
+		
+		window.onmouseenter = function(e){
+			vedamo_analytic_isonfocus=true;
+			vedamo_analytic_stop_timer = false;
+			vedamo_analytic_time_spent_timeout_function();
+		};
+		
+		window.addEventListener("beforeunload", function (e) {
+			vedamo_analytic_update_visit();
+		});
+		
+		
+		if (document.addEventListener){
+			document.addEventListener('click', vedamo_click_href_callback, false);
+		} else {
+			document.contentWindow.attachEvent('onclick', vedamo_click_href_callback);
+		}
+
+		vedamo_analytic_create_visit();
+	}
+	
+	function getQueryVars() {
+		var result = {}, pairs = location.search.slice(1).split('&');
+		pairs.forEach(function(pair) {
+			pair = pair.split('=', 2);
+			var key = '', value = '';
+			if (pair.length > 0) {
+				key = decodeURIComponent(pair[0]);
+				if (pair.length > 1) {
+					value = decodeURIComponent(pair[1]);
+				}
+				result[key] = value;
+			}
+		});
+		return result;
+	}
+	
+	var vedamo_analytic_time_spent_timeout_function = function(){
+		clearTimeout(vedamo_analytic_time_spent_timeout);
+		vedamo_analytic_time_spent_timeout = setTimeout(function(){
+
+			if (vedamo_analytic_stop_timer == false){
+				vedamo_analytic_page_object.time_spent += 1;
+				if (vedamo_analytic_page_object.time_spent > 0 && vedamo_analytic_page_object.time_spent % 30 == 0 && vedamo_analytic_page_object.time_spent <= 300){
+					vedamo_analytic_update_visit();
+				}
+				
+				vedamo_analytic_time_spent_timeout_function();
+			}		
+		}, 1000);
+	}
+	
+
+	// Functions
+	function vedamo_analytic_create_visit(){
+	
+		vedamo_analytic_time_spent_timeout_function();
+		
+		vedamo_analytic_page_object.operation = 'C';
+		
+		if (typeof ga == 'function' && typeof ga.getAll == 'function'){
+			try {
+				vedamo_analytic_page_object.guser_id = ga.getAll()[0].get('clientId');	
+			} catch(err){
+
+			}				
+		}
+		
+		xmlhttp=new XMLHttpRequest();
+		xmlhttp.open("GET", vedamo_analytic_listener_url);
+		xmlhttp.setRequestHeader('x-vedamo',  btoa(encodeURIComponent(Object.keys(vedamo_analytic_page_object).map(function(itm) { return vedamo_analytic_page_object[itm]; }).join("-spacer-"))));
+		xmlhttp.send();
+		
+		/*
+		$.ajax({
+			type : "GET",
+			url : vedamo_analytic_listener_url,
+			dataType : 'html',
+			headers: { 'x-vedamo':  Object.keys(vedamo_analytic_page_object).map(function(itm) { return vedamo_analytic_page_object[itm]; }).join("-spacer-")},
+			//data: {page_object : vedamo_analytic_page_object},
+			async: true,
+			success: function(data){
+
+				if (data.action && data.action =='refresh'){
+    				location.reload();
+    				return;
+    				
+    			}
+				
+    			
+			},
+			error: function(data){
+				
+			}
+		});
+		*/
+	};
+	
+	function vedamo_analytic_update_visit(){
+
+		vedamo_analytic_page_object.operation = 'U';
+		
+		if (typeof ga == 'function' && typeof ga.getAll == 'function'){
+			try {
+				vedamo_analytic_page_object.guser_id = ga.getAll()[0].get('clientId');	
+			} catch(err){
+
+			}	
+		}
+		
+		xmlhttp=new XMLHttpRequest();
+		xmlhttp.open("GET", vedamo_analytic_listener_url);
+		xmlhttp.setRequestHeader('x-vedamo',  btoa(encodeURIComponent(Object.keys(vedamo_analytic_page_object).map(function(itm) { return vedamo_analytic_page_object[itm]; }).join("-spacer-"))));
+		xmlhttp.send();
+		
+		/*
+		$.ajax({
+			type : "GET",
+			url : vedamo_analytic_listener_url,
+			dataType : 'html',
+			//data: {page_object : vedamo_analytic_page_object},
+			headers: { 'x-vedamo':  Object.keys(vedamo_analytic_page_object).map(function(itm) { return vedamo_analytic_page_object[itm]; }).join("-spacer-")},
+			async: true,
+			success: function(data){
+				
+    			if (goto_url){
+    				if (ctrlPressed){
+						vedamo_new_window_holder.location.href = vedamo_analytic_page_object.next_url;
+						
+    				} else {
+    					location.href = vedamo_analytic_page_object.next_url;
+    				}	
+    			}
+				
+			},
+			error: function(data){
+				
+    			if (goto_url){
+    				if (ctrlPressed){
+						vedamo_new_window_holder.location.href = vedamo_analytic_page_object.next_url;
+    				} else {
+    					location.href = vedamo_analytic_page_object.next_url;
+    				}	
+    			}
+				
+			}
+		})
+		.done(function() {
+		 
+		});
+		*/
+		
+		
+	}
+		
+	function vedamo_analytic_set_next_url(url){
+		vedamo_analytic_page_object.next_url = url;
+		
+		vedamo_analytic_page_object.operation = 'N';
+		
+		
+		xmlhttp=new XMLHttpRequest();
+		xmlhttp.open("GET", vedamo_analytic_listener_url);
+		xmlhttp.setRequestHeader('x-vedamo',  btoa(encodeURIComponent(Object.keys(vedamo_analytic_page_object).map(function(itm) { return vedamo_analytic_page_object[itm]; }).join("-spacer-"))));
+		xmlhttp.send();
+		
+		/*
+		$.ajax({
+			type : "GET",
+			url : vedamo_analytic_listener_url,
+			dataType : 'html',
+			//data: {page_object : vedamo_analytic_page_object},
+			headers: { 'x-vedamo':  Object.keys(vedamo_analytic_page_object).map(function(itm) { return vedamo_analytic_page_object[itm]; }).join("-spacer-")},
+			async: true,
+			success: function(data){
+			},
+			error: function(data){	
+			}
+		})
+		.done(function() {
+		});
+		*/
+	}
+	
+	function vedamo_analytic_is_url(url){
+		if (url.indexOf('#') != 0){
+			return true;
+		}
+
+	}
+	
+	var vedamo_analytic_iframe = document.getElementById("iframeExport");
+	
+	// Incase blog with iframe
+	
+	
+	
+	function vedamo_click_href_callback(e) {
+		
+		var e = window.e || e;
+		
+		if (!e || !e.target || e.target.tagName !== 'A'){
+			return;
+		}
+		// Do something
+		if (!vedamo_analytic_is_url(e.srcElement.attributes.href.textContent)){
+			return false;
+		}
+	
+		vedamo_analytic_set_next_url(e.srcElement.attributes.href.textContent);
+		vedamo_analytic_update_visit();	
+		
+	}
+
+	if (vedamo_analytic_iframe){
+			vedamo_analytic_iframe.onload = function() {
+				
+				vedamo_analytic_init();
+
+				if (document.addEventListener){
+					vedamo_analytic_iframe.contentWindow.addEventListener('click', vedamo_click_href_callback, false);
+				} else {
+					vedamo_analytic_iframe.contentWindow.attachEvent('onclick', vedamo_click_href_callback);
+				}
+			
+			};
+	} else {
+		vedamo_analytic_init();
+	}	
+	
+	
+
+	
+	function vedamo_analytic_uuidv4() {
+	  return 'xxxxxxxx-xxxx-4xxx-yxxx-xxxxxxxxxxxx'.replace(/[xy]/g, function(c) {
+		var r = Math.random() * 16 | 0, v = c == 'x' ? r : (r & 0x3 | 0x8);
+		return v.toString(16);
+	  });
+	}	
+	
+	function vedamo_analytic_set_cookie(name,value,days) {
+		var expires = "";
+		if (days) {
+			var date = new Date();
+			date.setTime(date.getTime() + (days*24*60*60*1000));
+			expires = "; expires=" + date.toUTCString();
+		}
+		document.cookie = name + "=" + (value || "")  + expires + "; path=/";
+	}
+	
+	function vedamo_analytic_get_cookie(name) {
+		var nameEQ = name + "=";
+		var ca = document.cookie.split(';');
+		for(var i=0;i < ca.length;i++) {
+			var c = ca[i];
+			while (c.charAt(0)==' ') c = c.substring(1,c.length);
+			if (c.indexOf(nameEQ) == 0) return c.substring(nameEQ.length,c.length);
+		}
+		return null;
+	}
+	
+}, false);

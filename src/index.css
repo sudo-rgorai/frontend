@@ -1,0 +1,104 @@
+body {
+  margin: 0;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen',
+    'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue',
+    sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  background-color: white !important;
+}
+
+code {
+  font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
+    monospace;
+}
+/* width */
+::-webkit-scrollbar {
+  width: 10px;
+}
+
+/* Track */
+::-webkit-scrollbar-track {
+  background: #f1f1f1; 
+}
+ 
+/* Handle */
+::-webkit-scrollbar-thumb {
+  background: #888; 
+}
+
+/* Handle on hover */
+::-webkit-scrollbar-thumb:hover {
+  background: #555; 
+}
+#split-button-menu1{
+  display: flex;
+  margin-top: 1.5vh;
+  width: fit-content;
+  height:fit-content;
+
+  background: #89969F;
+}
+#quick-actions-rectangle1{
+  
+  margin-left: 2.5%;
+  margin-top: 2.5%;
+  width: 95%;
+  height: 32%;
+
+  background: #F6F8F9;
+}
+#quick-actions-rectangle2{
+  margin-left: 2.5%;
+  margin-top: 2.5%;
+  width: 95%;
+  height: 32%;
+
+  background: #F6F8F9;
+}
+#quick-actions-rectangle3{
+  margin-left: 2.5%;
+  margin-top: 2.5%;
+  width: 95%;
+  height: 32%;
+
+  background: #F6F8F9;
+}
+#quick-actions-circle1{
+  align-content: center;
+  position: relative;
+  left: 25%;
+  padding-bottom: 15%;
+  
+}
+#quick-actions-circle2{
+  align-content: center;
+  position: relative;
+  left: 25%;
+  padding-bottom: 15%;
+}
+#quick-actions-circle3{
+  align-content: center;
+  position: relative;
+  left: 25%;
+  padding-bottom: 15%;
+}
+#quick-actions-text1{
+  
+  position: relative;
+  top: 5vh;
+  right: 18%;
+
+}
+#quick-actions-text2{
+  position: relative;
+  top: 5vh;
+  right: 18%;
+  
+}
+#quick-actions-text3{
+  position: relative;
+  top: 5vh;
+  right: 18%;
+}
+

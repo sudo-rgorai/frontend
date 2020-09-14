@@ -1,0 +1,21 @@
+$(function () {
+
+    $('.alert').on('click', '.close, .letter', function (e) {
+
+        var id = $(this).parent('.alert').attr('data-id');
+        
+        var popUp = $(this).parent();
+        
+        $.ajax(_root + '/notification/close/', {
+            data: {
+                id: id
+            },
+            dataType: 'json',
+            type: 'POST'
+        }).done(function (resp) {
+            popUp.remove();
+        });
+    });
+
+
+});

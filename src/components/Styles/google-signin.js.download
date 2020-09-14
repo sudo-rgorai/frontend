@@ -1,0 +1,54 @@
+jQuery(function($) {
+
+	$.fn.googleSignin = function(){
+		if ($(document).find('.google_signing_button_container').length > 0){
+
+			var params = JSON.parse($('.google_signing_button_container').attr('data-params'));
+			params.referrer = window.location.href;
+			generateSigninButton(params);
+			
+			$(document).off('click','.google_sign_in_button');
+			
+			// $(document).on('click','.google_sign_in_button',function(e){
+					
+			// 		var params = JSON.parse($(this).parent('.google_signing_button_container').attr('data-params'));
+			// 		params.referrer = window.location.href;
+					
+			// 		if (params.action == 'register' || params.action == 'register-academy'){
+			// 			var mandatory_consents_field = $(document).find('#mandatory_consents');
+						
+			// 			if (mandatory_consents_field.length > 0 && mandatory_consents_field.valid() != 'undefined' && mandatory_consents_field.valid() == false){
+			// 				mandatory_consents_field.valid();
+			// 				e.preventDefault();
+			// 			}
+			// 		}
+			// });
+			
+			
+		}
+		
+		
+		function generateSigninButton(params){
+			$.ajax({
+			  type: "POST",
+			  url: _root +'/default/google-signin/create-button',
+			  data: { params: params },
+			  dataType: 'json'
+			}).done(function(data){
+				if (data === null) {
+					console.error('data is null');
+					return;
+				}
+				if (data.button) {
+						$('.google_signing_button_container').html(data.button);
+				} 
+			});
+		}
+		
+		
+	};
+	
+
+	
+	$(document).googleSignin();
+});

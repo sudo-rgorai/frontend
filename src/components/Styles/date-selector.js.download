@@ -1,0 +1,153 @@
+// object for repopulation combos for date selection
+// depending on what year and months is selected 
+// for month if no list is given - no population
+// for year if no min & max are given - no population
+var dateSelector = {
+	dLabel : '',
+	mLabel : '',
+	yLabel : '',
+	dId : '',
+	mId : '',
+	mList : [],
+	yId : '',
+	yMin : 1900,
+	yMax : 2015,
+	daysCnt : 31,
+	
+	mRedraw : false,
+	yRedraw : false,
+	
+	// init data for date combos
+	init : function(dId, month, year, dLabel, mLabel, yLabel) {
+		this.dId = dId;
+		
+		// check if month must be repopulated
+		this.mId = month.id;
+		if(month.list != undefined) {
+			this.mList = month.list;
+			this.mRedraw = true;
+		}
+		// check if year must e repopulated
+		this.yId = year.id;
+		if(year.min != undefined && year.max != undefined) {
+			if(year.min != undefined)
+				this.yMin = year.min;
+			if(year.max != undefined)
+				this.yMax = year.max;
+			this.yRedraw = true;
+		}
+		
+		// set labels if set
+		if(dLabel != undefined)
+			this.dLabel = dLabel;
+		if(mLabel != undefined)
+			this.mLabel = mLabel;
+		if(yLabel != undefined)
+			this.yLabel = yLabel;
+	},
+	
+	// check if all selectors (combos) for date exist
+	checkSelectorsExist : function() {
+		if(!$('#'+this.dId).length || !$('#'+this.mId).length || !$('#'+this.yId).length)
+			return false
+		return true;
+	},
+	
+	// repopulate combos with data
+	populate : function() {
+		if(!this.checkSelectorsExist())
+			return false;
+		
+		this.calcMonthDays();
+		
+		// reload dates
+		var selDate = $('#'+this.dId).val();
+		if(selDate == undefined) {
+			selDate = -1;
+		}
+		if(selDate < 10) {
+			if(selDate.length == 1) {
+				selDate = '0'+selDate;
+			}
+		}
+		$('#'+this.dId).empty();
+		$('#'+this.dId).append('<option value="-1">'+t(this.dLabel)+'</option><option value="" disabled>--------------------</option>');
+		for(var i = 1; i <= this.daysCnt; i++)
+			$('#'+this.dId).append('<option value="'+((i < 10 ? '0' : '')+i)+'">'+((i < 10 ? '0' : '')+i)+'</option>');
+		if(selDate > this.daysCnt)
+			selDate = this.daysCnt;
+		$('#'+this.dId).val(selDate);
+		
+		// reload months
+		if(this.mRedraw) {
+			var selMonth = $('#'+this.mId).val();
+			if(selMonth == undefined) {
+                selMonth = -1;
+            }
+			$('#'+this.mId).empty();
+			$('#'+this.mId).append('<option value="-1">'+t(this.mLabel)+'</option><option value="" disabled>--------------------</option>');
+			for(var i = 1; i <= 12; i++)
+				$('#'+this.mId).append('<option value="'+((i < 10 ? '0' : '')+i)+'">'+t(this.mList[i - 1] != undefined ? this.mList[i - 1] : ((i < 10 ? '0' : '')+i))+'</option>');
+			$('#'+this.mId).val(selMonth);
+		}
+		
+		// reload year
+		if(this.yRedraw) {
+			var selYear = $('#'+this.yId).val();
+			if(selYear == undefined) {
+                selYear = -1;
+            }
+			$('#'+this.yId).empty();
+			$('#'+this.yId).append('<option value="-1">'+t(this.yLabel)+'</option><option value="" disabled>--------------------</option>');
+			for(var i = this.yMax; i >= this.yMin; i--)
+				$('#'+this.yId).append('<option value="'+i+'">'+i+'</option>');
+			$('#'+this.yId).val(selYear);
+		}
+	},
+	
+	// calc current month days
+	calcMonthDays : function() {
+		// if no month is selected days are 31
+		var curMonth = parseInt($('#'+this.mId).val());
+		if(isNaN(curMonth)) {
+			this.daysCnt = 31;
+		} else {
+			if($.inArray(curMonth, [0,1,3,5,7,8,10,12]) > 0) { // 0 - bug in inArray method of jQuery (first element from array is not matching)
+				this.daysCnt = 31;
+			} else {
+				if(curMonth == 2) {
+					this.daysCnt = this.yearFebDays();
+				} else {
+					this.daysCnt = 30;
+				}
+			}
+		}
+	},
+	
+	// calc current year days for february
+	// depend if year is leap or not
+	yearFebDays : function() {
+		var febDays = 29;
+		var curYear = $('#'+this.yId).val();
+		
+		// there are three rules for detecting leap years
+		// 1. The year is evenly divisible by 4;
+		// 2. If the year can be evenly divided by 100, it is NOT a leap year, unless;
+		// 3. The year is also evenly divisible by 400. Then it is a leap year.
+		
+		if(!isNaN(curYear)) {
+			if(!(curYear % 4)) {
+				if(!(curYear % 100)) {
+					if(!(curYear % 400))
+						febDays = 29;
+					else
+						febDays = 28;
+				} else
+					febDays = 29;
+			} else
+				febDays = 28;
+		}
+		
+		return febDays;
+	}
+};

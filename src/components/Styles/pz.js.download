@@ -1,0 +1,290 @@
+jQuery(function($) {
+	// jQuery extensions
+	$.extend({
+		getXML: function(url, data, callback) {
+			return $.get(url, data, callback, 'xml');
+		},
+		getHTML: function(url, data, callback) {
+			return $.get(url, data, callback, 'html');
+		},
+		getJSONP: function(url, data, callback) {
+			return $.get(url, data, callback, 'jsonp');
+		},
+		getText: function(url, data, callback) {
+			return $.get(url, data, callback, 'text');
+		},
+		postXML: function(url, data, callback) {
+			return $.post(url, data, callback, 'xml');
+		},
+		postHTML: function(url, data, callback) {
+			return $.post(url, data, callback, 'html');
+		},
+		postScript: function(url, data, callback) {
+			return $.post(url, data, callback, 'script');
+		},
+		postJSON: function(url, data, callback) {
+			return $.post(url, data, callback, 'json');
+		},
+		postJSONP: function(url, data, callback) {
+			return $.post(url, data, callback, 'jsonp');
+		},
+		postText: function(url, data, callback) {
+			return $.post(url, data, callback, 'text');
+		},
+		cloneObject: function(obj, deep) {
+			return deep ? $.extend(true, {}, obj) : $.extend({}, obj);
+		}
+	}).ajaxSetup({
+		cache: false
+	});
+
+	$.fn.attrs = function() {
+		var attrs = {};
+
+		if (!this.size()) {
+			return attrs;
+		}
+
+		$.each(this[0].attributes, function() {
+			var key = this.nodeName;
+
+			attrs[key] = this.nodeValue;
+		});
+
+		return attrs;
+	};
+
+	// PZ library
+	window.PZ = {
+		dialog: {
+			// action binds data to dialog form
+			create: function(title, text, buttons, autoOpen, action, custom) {
+				var $this = $();
+				if (!custom) {
+					$this = $('#dialog-form');
+					$this.text(t(text));
+				}
+				else {
+					$this = $(custom);
+				}
+
+				$this.dialog({
+					autoOpen: false,
+					modal: true,
+					width: 800,
+					//height: 600,
+					buttons: buttons
+				});
+
+				if (title) {
+					$this.dialog('option', 'title', t(title));
+				}
+
+				if (autoOpen) {
+					$this.dialog('open');
+				}
+
+				if (typeof action !== 'undefined') {
+					$this.data('action', action);
+				}
+				return $this;
+			}
+		},
+		log: {
+			save: function(name, item, item_id, value) {
+				$.postJSON(_root + '/log.php', {
+					name: name,
+					item: item,
+					item_id: item_id,
+					value: value
+				});
+			}
+		},
+		ckeditor: {
+			inlineAll: function(callback) {
+				$(window).trigger('pz_editingstart');
+
+				var cke_loaded = 0, cke_all = 0, cke_callback_fired = false;
+
+				$('a.ckeditor-inline.ckeditor-inline-plain').filter('.ckeditor-wrap, .ckeditor-unwrap').each(function() {
+					var $this = $(this), attrs = $this.attrs(), classes = attrs.class;
+
+					if ($this.hasClass('ckeditor-wrap')) {
+						var div = $('<div />').data('old_attrs', attrs).text($this.text());
+
+						attrs = $.cloneObject(attrs);
+						delete attrs.href;
+
+						$this.replaceWith(div.attr(attrs));
+					}
+
+					if ($this.hasClass('ckeditor-unwrap')) {
+						attrs = $.cloneObject(attrs);
+
+						delete attrs.class;
+
+						var parent = $this.parent();
+
+						parent.data('new_attrs', attrs);
+						parent.data('new_classes', classes);
+
+						attrs = $.cloneObject(attrs);
+
+						delete attrs.href;
+
+						parent.attr(attrs);
+						parent.addClass(classes);
+					}
+				});
+
+				$(Object.keys(CKEDITOR.dtd.$editable).join(',')).filter('.ckeditor-inline').each(
+						function() {
+							if (typeof CKEDITOR.instances[this.id] !== 'undefined') {
+								return true;
+							}
+
+							var $this = $(this), config = {};
+
+							if ($this.hasClass('ckeditor-inline-plain')) {
+								config.forcePasteAsPlainText = true;
+								config.allowedContent = '';
+								config.removePlugins = 'toolbar,link';
+								config.plugins = '';
+								config.enterMode = CKEDITOR.ENTER_BR;
+								config.shiftEnterMode = CKEDITOR.ENTER_BR;
+								config.keystrokes = [[13 /* Enter */, 'donothing'], [CKEDITOR.SHIFT + 13 /* Shift+Enter */, 'donothing']];
+							}
+							else {
+								var filebrowser_cfg;
+
+								if (filebrowser_cfg = $this.data('filebrowser-vars')) {
+									config.filebrowserBrowseUrl = config.filebrowserImageBrowseUrl = CKEDITOR.getUrl('../moxiemanager/ckeditor/browse.php?config=' + encodeURIComponent(filebrowser_cfg));
+								}
+
+								config.specialChars = ["&lsquo;", "&rsquo;", "&ldquo;", "&rdquo;", "&acute;", "&hellip;", "&middot;", "&bull;", "&ndash;", "&mdash;", "&euro;", "&cent;", "&pound;", "&sect;", "&copy;", "&reg;", "&trade;", "&laquo;", "&raquo;", "&deg;", "&sup1;", "&sup2;", "&sup3;", "&micro;", "&para;", "&frac14;", "&frac12;", "&frac34;", "&#9658;", "&rarr;", "&rArr;", "&hArr;", "&diams;", "&asymp;", "&Alpha;", "&Beta;", "&Gamma;", "&Delta;", "&Epsilon;", "&Zeta;", "&Eta;", "&Theta;", "&Iota;", "&Kappa;", "&Lambda;", "&Mu;", "&Nu;", "&Xi;", "&Omicron;", "&Pi;", "&Rho;", "&Sigma;", "&Tau;", "&Upsilon;", "&Phi;", "&Chi;", "&Psi;", "&Omega;", "&alpha;", "&beta;", "&gamma;", "&delta;", "&epsilon;", "&zeta;", "&eta;", "&theta;", "&iota;", "&kappa;", "&lambda;", "&mu;", "&nu;",
+										"&xi;", "&omicron;", "&pi;", "&rho;", "&sigmaf;", "&sigma;", "&tau;", "&upsilon;", "&phi;", "&chi;", "&psi;", "&omega;", "&thetasym;", "&upsih;", "&piv;"];
+							}
+
+							data = {
+								element: this,
+								config: config
+							};
+
+							if (CKEDITOR.fire('inline', data) !== false) {
+								$this.data('initial_content', $this.html());
+								var editor = CKEDITOR.inline(this, config);
+
+								if (typeof callback === 'function') {
+									cke_all++;
+
+									editor.once('instanceReady', function() {
+										cke_loaded++;
+
+										if (cke_loaded === cke_all && !cke_callback_fired) {
+											cke_callback_fired = true;
+											callback();
+										}
+									});
+								}
+							}
+
+							this.contentEditable = true;
+						});
+
+				if (typeof callback === 'function') {
+					if (cke_all === 0) {
+						callback();
+						return;
+					}
+
+					setTimeout(function() {
+						if (cke_loaded !== cke_all && !cke_callback_fired) {
+							cke_callback_fired = true;
+							callback(true);
+						}
+					}, 5000);
+				}
+			},
+			destroyAll: function(noUpdate) {
+				$.each(CKEDITOR.instances, function() {
+					var el = this.element.$;
+
+					if (!el) {
+						return;
+					}
+
+					var $el = $(el);
+
+					el.contentEditable = false;
+
+					this.destroy();
+
+					if (noUpdate) {
+						$el.html($el.data('initial_content'));
+					}
+
+					if ($el.is('.ckeditor-wrap')) {
+						$el.replaceWith($('<a />', $el.data('old_attrs')).text($el.text()));
+					}
+
+					if ($el.is('.ckeditor-unwrap')) {
+						var el_data = $el.data();
+
+						$.each(el_data.new_attrs, function(key) {
+							$el.removeAttr(key);
+						});
+
+						$el.removeClass(el_data.new_classes);
+
+						var a = $('<a />', el_data.new_attrs).addClass(el_data.new_classes).text($el.text());
+						$el.empty().append(a);
+					}
+				});
+
+				$(window).trigger('pz_editingend');
+			},
+			isDirty: function() {
+				var is_dirty = false;
+
+				$.each(CKEDITOR.instances, function() {
+					if (this.checkDirty()) {
+						is_dirty = true;
+						return false;
+					}
+				});
+
+				return is_dirty;
+			},
+			inlineSave: function(callback) {
+				var data = {};
+				var i = 0;
+
+				$.each(CKEDITOR.instances, function() {
+					var $element = $(this.element.$);
+
+					data[i] = {
+						id: $element.data('id'),
+						model: $element.data('model'),
+						field: $element.data('field'),
+						// value: this.getData().replace(/[&]nbsp[;]/gi,"")
+						value: this.getData()
+					};
+
+					if ($element.hasClass('ckeditor-inline-plain')) {
+						data[i].plain = 1;
+					}
+
+					i++;
+				});
+
+				var xhr = $.postJSON(_root + '/default/inline-save/save', {
+					postdata: data
+				});
+
+				if (typeof callback === 'function') {
+					xhr.done(callback);
+				}
+			}
+		}
+	};
+});

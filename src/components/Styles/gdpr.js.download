@@ -1,0 +1,145 @@
+jQuery(function($) {
+	// GDPR Consents
+	var gdpr_action_window = 'not_mandatory';
+	
+	if ($('#not_mandatory_consents_modal').length > 0){
+		$('#not_mandatory_consents_modal').modal({
+			backdrop: 'static',
+    		keyboard: false,
+    		show: false
+		});
+		
+		if ($('#mandatory_consents_modal').length <= 0){
+			$('#not_mandatory_consents_modal').modal('show');
+		}
+	}
+	
+	// Textarea validation
+
+	var consentBtn = $('#mandatory_consents_termination_send'),
+			reasonTextarea = $('#gdpr_termination_reason');
+
+	reasonTextarea.on('keyup', function(){
+
+		if(reasonTextarea.val().length > 0) {
+			consentBtn.prop( "disabled", false );
+		} else {
+			consentBtn.prop( "disabled", true );
+		}
+
+	});
+	
+	
+	if ($('#mandatory_consents_modal').length > 0){
+		$('#mandatory_consents_modal').modal({
+			backdrop: 'static',
+    		keyboard: false,
+    		show: true
+		});
+	}
+	
+	
+	// Disagree
+	$('#mandatory_consents_terminate').on('click', function(){
+		gdpr_action_window = 'termination';
+	});
+	
+	// Back termination
+	$('#mandatory_consents_termination_back').on('click', function(){
+		window.location.reload();
+	});
+	
+	// Reactivate termination
+	$('#mandatory_consents_termination_sent_reactivate').on('click', function(){
+		window.location.reload();
+	});
+	
+	// Submit termination
+	$('#mandatory_consents_termination_send').on('click', function(){
+		$.ajax({
+            url: _root + '/default/gdpr/submit-termination',
+            type: 'POST',
+            dataType: 'json',
+            data: $('#mandatory_consents_termination_form').serialize(),
+            
+        }).done(function(data){
+            if (data.success){
+            	gdpr_action_window = 'termination_sent';
+            	$('#mandatory_consents_termination_modal').modal('hide');
+            }
+        }).fail(function(){
+            
+        });
+	});
+	
+	// Agree btn 
+	$('#mandatory_consents_agree').on('click', function(){
+		$.ajax({
+            url: _root + '/default/gdpr/accept-mandatory',
+            type: 'POST',
+            dataType: 'json',
+            data: {
+                accept: true
+            },
+            
+        }).done(function(){
+            $('#mandatory_consents_modal').modal('hide');
+        }).fail(function(){
+            
+        });
+	});
+	
+	// Agree not mandatory
+	$('#gdpr_not_mandatory_consent_done').on('click', function(){
+		var current_btn = $(this);
+		$.ajax({
+            url: _root + '/default/gdpr/accept-not-mandatory',
+            type: 'POST',
+            dataType: 'json',
+            data: $('#gdpr_not_mandatory_consent_form').serialize(),
+            
+        }).done(function(){
+            $('#not_mandatory_consents_modal').modal('hide');
+        }).fail(function(){
+            
+        });
+	});
+	
+	$('#mandatory_consents_modal').on('hidden.bs.modal', function () {
+	 	randerGdprWindows();
+	});
+	
+	$('#mandatory_consents_termination_modal').on('hidden.bs.modal', function () {
+	 	randerGdprWindows();
+	});
+	
+	
+	
+	
+	
+	function randerGdprWindows(){
+		switch (gdpr_action_window){
+	 		case 'not_mandatory':
+	 			if ($('#not_mandatory_consents_modal').length > 0){
+					$('#not_mandatory_consents_modal').modal('show');
+				}
+	 		break;
+	 		case 'termination':
+	 			$('#mandatory_consents_termination_modal').modal({
+					backdrop: 'static',
+		    		keyboard: false,
+		    		show: true
+				});
+	 		break;	
+	 		case 'termination_sent':
+	 			$('#mandatory_consents_termination_sent_modal').modal({
+					backdrop: 'static',
+		    		keyboard: false,
+		    		show: true
+				});
+	 		break;
+	 	}	
+		
+	}
+
+});

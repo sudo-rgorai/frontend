@@ -1,0 +1,349 @@
+(function($) {
+  'use strict';
+  var FormSubmitStatus = (function() {
+    
+    /*
+      * Generate the html template for the success page for forms where data-hide_after_submit="true"
+      * @param data: object containing the data to be rendered by the template;
+      * @return string;
+    */
+    function _getSuccessTemplate(data) {
+      if (!data.status || !data.message) {
+        console.log('Status data should have status and message property;');
+        return '';
+      }
+
+      var template = [
+        '<div class="alert push-bottom alert-' + data.status + '" >',
+        '<a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>',
+          t(data.message),
+        '</div>',
+        '<a href="#" class="show_form btn-link">'+ t('SEND_AGAIN') + '</a>'
+      ];
+
+      return template.join('');
+    }
+
+    /*
+      * Default behavior for all submit forms:
+      * - by default is bound to all forms on submit during init()
+      * - handles the form disabling, the spinner appearence on submit, and the form status / success page after submission
+    */
+    function _onSubmitHandler() {
+      var self = this;
+      
+      if (typeof(self.options.manageCallbacks['beforeSubmit'] === 'function')) {
+        self.options.manageCallbacks['beforeSubmit'];
+      }
+
+      if (self.$form.data('validator') && !self.$form.valid()) {
+          return;
+      }
+
+      self.disable();
+
+      setTimeout(function() {
+        self.enable();
+        if (self.options['showSuccessPage']) {
+          self.showSuccessPage();
+          if (self.options.redirectAfterSubmit){
+  			window.location.href = self.options.redirectAfterSubmit;	
+  	  	  }
+        }
+      }, self.timout);
+
+      if (typeof(self.options.manageCallbacks['afterSubmit']) === 'function') {
+        self.options.manageCallbacks['afterSubmit'].call(self);
+      }
+    }
+
+    /*
+      * Default behavior for forms send via ajax:
+      * - it's not bound by default, should be explicitly called by the sent(url, data) method;
+      * - handles the form disabling, the spinner appearence after sending the form, and the form status / success page after ajax response
+    */
+    function _onAjaxSendHandler(url, data) {
+      var self = this;
+      if (url === undefined || data === undefined) {
+        console.log('error: please specify url and data to send.');
+        return;
+      }
+
+      if (typeof(self.options.manageCallbacks['beforeSubmit'] === 'function')) {
+        self.options.manageCallbacks['beforeSubmit'];
+      }
+
+      if (self.$form.data('validator') && !self.$form.valid()) {
+          return;
+      }
+
+      function _trackConversion(params) {
+        var trackingParams = {};
+
+        if (params) {
+          try {
+            trackingParams = JSON.parse(params);
+            $.getScript('https://www.googleadservices.com/pagead/conversion_async.js', function() {
+              window.google_trackConversion(trackingParams);
+            });
+          } catch (ex) {
+            console.log('error: google tracking was not initialized.')
+            console.log(ex);
+          }
+        }
+      }
+
+      self.disable();
+
+      $.ajax({
+              type: "POST",
+              url: _root + url,
+              dataType: 'JSON',
+              data: data
+          }).done(function (data) {
+              self.removeStatus();
+              self.enable();
+
+              // try to call the general invokeErrors method 
+              // or append generic failure status if the errors object is missing or inconsistent
+              if (data.errors && Object.keys(data.errors).length > 0) {
+                try {
+                  invokeErrors(data.errors);
+                } catch (ex) {
+                  console.log(ex);
+                  self.appendStatus('danger', t('FORM_SUBMISSION_FAILED'));
+                }
+
+                return;
+              }
+
+              // workaround for inconsistent responses
+              if (data.error) {
+                console.log('error:' + data.error);
+                return;
+              }
+
+              // show success message as new success page or as simple success status
+              if (data.success && self.options.showSuccessPage) {
+                self.showSuccessPage(data);
+              } else {
+                var defaultMessage = t('CHANGES_SAVED_SUCCESSFULLY');
+                var message = data.message ? data.message : defaultMessage;
+                self.appendStatus('success', message);
+              }
+
+              if (self.options.resetAfterSubmit) {
+                self.reset();
+              }
+
+              if (typeof(self.options.manageCallbacks['afterSubmit']) === 'function') {
+                self.options.manageCallbacks['afterSubmit'].call(self);
+              }
+
+              _trackConversion(data.trackingParams);
+          });
+    }
+
+    // build the initial structure of the form
+    function _buildHtml(self) {
+      self.$form.wrap('<div class="form_container">');
+      self.$formContainer = self.$form.parent('.form_container');
+      self.$formContainer.prepend('<div class="form_status" style="display:none;" ><div class="_content"></div></div>');
+      self.$formContainer.append('<div class="form_loading_overlay" style="display:none;">' + self.options.spinnerIcon + '</div>');
+      self.$formContainer.append('<div class="form_success" style="display:none;"></div>');
+      self.$formLoadingOverlay = self.$formContainer.find('.form_loading_overlay');
+      self.$status = self.$formContainer.find('.form_status');
+      self.$success = self.$formContainer.find('.form_success');
+    }
+
+    // workaround for parsing flash messages
+    // use with caution, currently there is no way to find only the flash messages related to the form
+    // so the form will display all the flashes, even if there are not related to this form
+    // note: depends on the css class '.messages_base'
+    function _getFlashMessages() {
+      var flashMessages = $('._flash_message_content');
+      var formMessages = [];
+  
+      flashMessages.each(function() {
+        var message = flashMessages.val();
+        var status = flashMessages.attr('data-status');
+        formMessages.push({status: status, message: message });
+      });
+
+      return formMessages;
+    }
+
+    // render alert message template
+    function _buildStatusesHtml(messages) {
+      var html = [];
+      for (var i = 0, len = messages.length; i < len; i++) {
+        html.push('<div class="alert push-bottom alert-' + messages[i].status + '" ><a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>');
+        html.push(messages[i].message);
+        html.push('</div>');
+      }
+
+      return html.join('');
+    }
+
+    var FormSubmitStatus = function(form, options) {
+      this.$form = form;
+      this.options =  $.extend(true,  {}, FormSubmitStatus.defaults, options);
+      this.timout = this.options['loadingLayerTimeout'];
+      this.statusMessages = [];
+      this.successPage = this.options.successPage;
+
+      _buildHtml(this);
+      this.init();
+      return this;
+    };
+
+    FormSubmitStatus.prototype.init = function() {
+      var self = this;
+      try {
+        // if this option is set to true, flash messages in the layout will be hidden
+        // and will be shown inside the form
+        if (self.options['showFlashMessagesInside']) {
+          self.statusMessages = _getFlashMessages();
+        } else {
+          $('.messages_base').removeClass('messages_base');
+        }
+
+        for (var  i = 0, len = self.statusMessages.length; i < len; i++) {
+          var currentMessage = self.statusMessages[i];
+          self.appendStatus(currentMessage.status, currentMessage.message);
+        }
+
+        /*
+        * On submit, show overlay layer if jquery validate() has passed successfully
+        * Add data-ajax="true" to prevent both _onSubmitHandeler and _onAjaxSendHendler to be called 
+        * in cases where the ajax call is triggered on submit
+        */ 
+        self.$form.on('submit', function(e) {
+          if ( self.options.isAjaxForm === true) { 
+            return;
+          }
+
+          if (typeof(self.options.manageCallbacks['onSubmit']) === 'function') {
+            self.options.manageCallbacks['onSubmit'].call(self);
+          } else {
+            console.log('Please add a valid submit handler.')
+          }
+          
+        });
+
+        //bind click events for the Success Page
+        self.$success.on('click', '.show_form', function() {
+          self.removeStatus();
+          self.showFormPage();
+        });
+
+
+      } catch (ex) {
+        console.log('error: form statuses failed to initialize.');
+        console.log(ex);
+      }
+    };
+
+    //showing the spinner layer
+    FormSubmitStatus.prototype.disable = function() {
+       this.$formLoadingOverlay.fadeIn();
+    };
+
+    //hiding the spinner layer
+    FormSubmitStatus.prototype.enable = function() {
+      this.$formLoadingOverlay.fadeOut();
+    };
+
+    //hides the success page and shows the form
+    FormSubmitStatus.prototype.showFormPage = function() {
+      this.$form.show();
+      this.$success.hide();
+    };
+
+    /* 
+     * Shows a success page and hides the form
+     * @param: data - object to extend the original success data so that ajax responses could overwrite the status message
+                      or add new data to be rendered by the getTemplate() method
+    */ 
+    FormSubmitStatus.prototype.showSuccessPage = function(data) {
+      var newSuccessData = $.extend(true, {}, this.successPage.data, data);
+      var successPageContent = this.successPage.getTemplate(newSuccessData);
+      this.$form.hide();
+      this.$success.show();
+      this.$success.html(successPageContent);
+    };
+
+    /* 
+     * Shows messages as alert statuses above the form, without hiding the form
+     * @param status: string - ['success', 'danger', 'warning']
+     * @param message: string - the content of the message
+    */ 
+    FormSubmitStatus.prototype.appendStatus = function(status, message) {
+      var messageHtml = _buildStatusesHtml([{
+        status: status,
+        message: message 
+      }]);
+
+      this.removeStatus();
+      this.$status.find('._content').append(messageHtml);
+      this.$status.slideDown();
+    };
+
+    FormSubmitStatus.prototype.removeStatus = function() {
+      this.$status.find('._content').html('');
+      this.$status.hide();
+    };
+
+    FormSubmitStatus.prototype.setSuccessTemplate = function(renderFunction) {
+      this.options.successPage.getTemplate = renderFunction;
+    };
+
+    /* 
+     * Explicitly calls the onAjaxSendHandler which handles the ajax call, the disabling/enabling of the form and status message / success page
+     * --NOTE--: when sending form via ajax, add data-ajax="true" to prevent calling both _onSubmit && _onAjaxSend handlers
+     * @param url: url to send the request to
+     * @param data: data to send
+    */ 
+    FormSubmitStatus.prototype.send = function(url, data) {
+     _onAjaxSendHandler.call(this, url, data);
+    };
+
+    FormSubmitStatus.prototype.reset = function() {
+      this.$form.trigger('reset');
+    };
+
+    FormSubmitStatus.defaults = {
+      isAjaxForm: false,
+      showFlashMessagesInside: false,
+      showSuccessPage: false,
+      spinnerIcon: '<i class="fa fa-refresh fa-spin fa-3x fa-fw"></i>',
+      loadingLayerTimeout: 5000,
+      resetAfterSubmit: true,
+      successPage: {
+        getTemplate: _getSuccessTemplate,
+        data: {
+          status: 'success',
+          message:'CHANGES_SAVED_SUCCESSFULLY',
+          trackingParams: '{}'
+        }
+      },
+      manageCallbacks: {
+        onSubmit: _onSubmitHandler,
+        onAjaxSend: _onAjaxSendHandler,
+        beforeSubmit: function() {},
+        afterSubmit: function() {}
+      }
+    };
+
+    return FormSubmitStatus;
+  }());
+
+  $.fn.formSubmitStatus = function(options) {
+    var options = options || {};
+    return this.each(function () {
+        if (!$(this).data('form_status')) {
+            $(this).data('form_status', new FormSubmitStatus($(this), options));
+        }
+    });
+  }
+} (jQuery));

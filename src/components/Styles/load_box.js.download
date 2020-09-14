@@ -1,0 +1,126 @@
+jQuery(function($) {
+	$.fn.loadBox = function(url, params, incoming_settings, callback) {
+       var url = url;
+       var params = params;
+       var callback = callback;
+       var container = $(this);
+       var ajdata = {};
+       
+	   var load_script_key = 0;
+	   var script_loaded = false;	       
+       var settings = {
+       		reloading : false, // Should reload box after reload_delay ?
+       		reload_delay : 20, // In seconds
+       		first_time_loaded: false,
+       		load_once: false
+       };
+       
+       
+       function loadScripts(){
+       	//console.log(load_script_key);
+       //console.log(ajdata.scripts);
+       		if (!ajdata.scripts[load_script_key]){
+       			if (typeof callback == 'function'){
+					callback(ajdata.data);
+				}
+				return;				
+       		}
+       		
+       	   if ($('script[src*="' +_root +'/js/'+ajdata.scripts[load_script_key] +'.js'+'"]').length > 0){
+	       		console.warn("Script:" +_root +'/js/'+ajdata.scripts[load_script_key] +'.js already loaded');
+	       		load_script_key++;
+				loadScripts();
+				return;
+	       }
+       		
+       		
+	       	$.getScript(_root +'/js/'+ajdata.scripts[load_script_key] +'.js', function(data, textStatus, jqxhr) {
+				load_script_key++;
+				loadScripts();
+			}).fail(function( jqxhr, settings, exception ) {
+				console.log(exception);
+				debugger;
+			});
+       	
+       	
+       }
+       
+       function loadCss(){
+       		for(var i in ajdata.css){
+       			
+       			var href = _root +'/css/' +ajdata.css[i] +'.css';
+       			
+       			if ($('link[href="' +href +'"]').length > 0){
+       				continue;
+       			}
+       			
+       			$('<link>')
+				  .appendTo('head')
+				  .attr({type : 'text/css', rel : 'stylesheet'})
+				  .attr('href', _root +'/css/' +ajdata.css[i] +'.css');	
+       		}
+       	
+       }
+       
+       
+       function init(container, url, params, incoming_settings, callback){
+       		if (!url){
+				return;	
+			}
+			
+			$.extend(true, params, { loadbox : true });
+			$.extend(true, settings, incoming_settings);
+			
+			if (container.hasClass('load_box_loaded') && settings.load_once){
+				return;
+			}
+			
+			$.ajax(url, {
+				data: params,
+				dataType: 'json',
+				type: 'POST'
+			}).done(function(data){
+				ajdata = data;
+				// This will see if we try to load content in modal
+				if (container.find('.modal-body').length > 0){
+					container.find('.modal-body').html(ajdata.modal);
+					container.modal('show');
+				} else {
+					container.html(ajdata.modal);
+				}
+				
+				
+				if (ajdata.css){
+					loadCss();
+				}
+				
+				if (ajdata.scripts){
+					load_script_key = 0;
+					loadScripts();
+				}
+				
+				
+			});
+			
+			if (settings.reloading && !settings.load_once){
+				setTimeout(function(){
+					if (!container.is(':visible')){
+						return;	
+					}
+					init(container, url, params, callback);
+				}, settings.reload_delay * 1000);
+			}
+			
+       }
+        
+        init(container, url, params, incoming_settings, callback);
+        
+        
+        return {
+        	update : function(params){
+        		init(container, url, params, incoming_settings, callback);	
+        	}
+        	
+       	};
+    };
+});

@@ -1,0 +1,30 @@
+jQuery(function($) {
+  		
+  		var context;
+  		
+  		$('body').on('hide.bs.modal', function (e) {
+  			context = $(e.target);
+
+  			if (context.attr('confirm_closure')){
+  				e.preventDefault();
+  				context.find('._alert_unsaved_data').removeClass('hidden');
+  			}
+  			
+  	    });
+  	    
+  	    $('body').on('show.bs.modal', function (e) {
+  	    	context = $(e.target);
+  			context.removeAttr('confirm_closure');
+  	    });
+  	    
+  	    $('body').on('click', '.modal .confirm_modal_close', function(){
+  	    	context.removeAttr('confirm_closure');
+  	    	context.find('._alert_unsaved_data').addClass('hidden');
+  	    	context.modal('hide');
+  	    });
+  	    
+  	    $('body').on('click', '.modal .dismiss_modal_close', function(){
+  	    	context.find('._alert_unsaved_data').addClass('hidden');
+  	    });
+  	    	
+});

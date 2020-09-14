@@ -1,0 +1,21 @@
+/*!
+ * 
+ * (C) Copyright IBM Corp. 2017 - 2020. All Rights Reserved.
+ * 
+ * Licensed under the Apache License, Version 2.0 (the "License"); you may not use this file except
+ * in compliance with the License. You may obtain a copy of the License at
+ * 
+ * http://www.apache.org/licenses/LICENSE-2.0
+ * 
+ * Unless required by applicable law or agreed to in writing, software distributed under the License
+ * is distributed on an "AS IS" BASIS, WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express
+ * or implied. See the License for the specific language governing permissions and limitations under
+ * the License.
+ * 
+ * watson-web-channel 2.3.0
+ * Contributors: Ethan Winters, Raymond Chu, Karen Harris, Ashley Lord, Amy Zhong, Ryan Simpson, Anthony Wong, Wilson Wong, David G Terry, Simon Burns, Damon Lundin, John Engstrom, Neil Mallinar
+ * Built: Aug 10 2020 9:19 pm +00:00
+ * 
+ * 
+ */
+(window.webpackJsonpWatsonAssistantChat=window.webpackJsonpWatsonAssistantChat||[]).push([[1],{243:function(t,s,a){"use strict";a.r(s),s.default=".WACContainer,:root{--WatsonAssistantChat-CARBON-interactive-01:#0f62fe;--WatsonAssistantChat-CARBON-interactive-02:#393939;--WatsonAssistantChat-CARBON-interactive-03:#0f62fe;--WatsonAssistantChat-CARBON-interactive-04:#0f62fe;--WatsonAssistantChat-CARBON-ui-background:#f4f4f4;--WatsonAssistantChat-CARBON-ui-01:#fff;--WatsonAssistantChat-CARBON-ui-02:#f4f4f4;--WatsonAssistantChat-CARBON-ui-03:#e0e0e0;--WatsonAssistantChat-CARBON-ui-04:#8d8d8d;--WatsonAssistantChat-CARBON-ui-05:#161616;--WatsonAssistantChat-CARBON-text-01:#161616;--WatsonAssistantChat-CARBON-text-02:#393939;--WatsonAssistantChat-CARBON-text-03:#a8a8a8;--WatsonAssistantChat-CARBON-text-04:#fff;--WatsonAssistantChat-CARBON-text-05:#6f6f6f;--WatsonAssistantChat-CARBON-icon-01:#161616;--WatsonAssistantChat-CARBON-icon-02:#525252;--WatsonAssistantChat-CARBON-icon-03:#fff;--WatsonAssistantChat-CARBON-link-01:#0f62fe;--WatsonAssistantChat-CARBON-inverse-link:#78a9ff;--WatsonAssistantChat-CARBON-field-01:#fff;--WatsonAssistantChat-CARBON-field-02:#f4f4f4;--WatsonAssistantChat-CARBON-inverse-01:#fff;--WatsonAssistantChat-CARBON-inverse-02:#393939;--WatsonAssistantChat-CARBON-support-01:#da1e28;--WatsonAssistantChat-CARBON-support-02:#24a148;--WatsonAssistantChat-CARBON-support-03:#f1c21b;--WatsonAssistantChat-CARBON-support-04:#0043ce;--WatsonAssistantChat-CARBON-inverse-support-01:#fa4d56;--WatsonAssistantChat-CARBON-inverse-support-02:#42be65;--WatsonAssistantChat-CARBON-inverse-support-03:#f1c21b;--WatsonAssistantChat-CARBON-inverse-support-04:#4589ff;--WatsonAssistantChat-CARBON-overlay-01:rgba(22,22,22,0.5);--WatsonAssistantChat-CARBON-danger:#da1e28;--WatsonAssistantChat-CARBON-focus:#0f62fe;--WatsonAssistantChat-CARBON-inverse-focus-ui:#fff;--WatsonAssistantChat-CARBON-hover-primary:#0353e9;--WatsonAssistantChat-CARBON-active-primary:#002d9c;--WatsonAssistantChat-CARBON-hover-primary-text:#0043ce;--WatsonAssistantChat-CARBON-hover-secondary:#4c4c4c;--WatsonAssistantChat-CARBON-active-secondary:#6f6f6f;--WatsonAssistantChat-CARBON-hover-tertiary:#0353e9;--WatsonAssistantChat-CARBON-active-tertiary:#002d9c;--WatsonAssistantChat-CARBON-hover-ui:#e5e5e5;--WatsonAssistantChat-CARBON-active-ui:#c6c6c6;--WatsonAssistantChat-CARBON-selected-ui:#e0e0e0;--WatsonAssistantChat-CARBON-inverse-hover-ui:#4c4c4c;--WatsonAssistantChat-CARBON-hover-selected-ui:#cacaca;--WatsonAssistantChat-CARBON-hover-danger:#b81921;--WatsonAssistantChat-CARBON-active-danger:#750e13;--WatsonAssistantChat-CARBON-hover-row:#e5e5e5;--WatsonAssistantChat-CARBON-visited-link:#8a3ffc;--WatsonAssistantChat-CARBON-disabled-01:#fff;--WatsonAssistantChat-CARBON-disabled-02:#c6c6c6;--WatsonAssistantChat-CARBON-disabled-03:#8d8d8d;--WatsonAssistantChat-CARBON-highlight:#d0e2ff;--WatsonAssistantChat-CARBON-skeleton-01:#e5e5e5;--WatsonAssistantChat-CARBON-skeleton-02:#c6c6c6;--WatsonAssistantChat-CARBON-brand-01:#0f62fe;--WatsonAssistantChat-CARBON-brand-02:#393939;--WatsonAssistantChat-CARBON-brand-03:#0f62fe;--WatsonAssistantChat-CARBON-active-01:#c6c6c6;--WatsonAssistantChat-CARBON-hover-field:#e5e5e5;--WatsonAssistantChat-CARBON-text-support-01:#fff;--WatsonAssistantChat-CARBON-text-support-02:#fff;--WatsonAssistantChat-CARBON-text-support-03:#161616;--WatsonAssistantChat-CARBON-text-support-04:#fff}"}}]);

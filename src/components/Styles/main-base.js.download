@@ -1,0 +1,1254 @@
+function t(label) {
+    try {
+        if (translate && label in translate) {
+            return translate[label];
+        } else {
+            return label;
+        }
+    } catch(excpt) {
+        console.log('Translate is missing');
+        return false;
+    }
+}
+
+
+function getBrowserName() {
+    var ua = navigator.userAgent;
+
+    if (ua.indexOf('OPR/') !== -1) {
+        return 'opera';
+    }
+
+    if (ua.indexOf('Chrome/') !== -1 || ua.indexOf('Chromium/') !== -1) {
+        return 'chrome';
+    }
+
+    if (ua.indexOf('Safari/') !== -1) {
+        return 'safari';
+    }
+
+    if (ua.indexOf('Firefox/') !== -1) {
+        return 'firefox';
+    }
+
+    if (ua.indexOf('Trident/') !== -1 || ua.indexOf('MSIE') !== -1) {
+        return 'ie';
+    }
+
+    return 'unknown';
+}
+
+function getBrowserVersion(browser) {
+    browser = browser || navigator;
+
+    if (!browser || !browser.userAgent || !browser.appName || !browser.appVersion) {
+        return;
+    }
+    var ua = browser.userAgent, tem, M = ua.match(/(opera|chrome|safari|firefox|msie|trident(?=\/))\/?\s*(\d+)/i) || [];
+
+    if (/trident/i.test(M[1])) {
+        tem = /\brv[ :]+(\d+)/g.exec(ua) || [];
+        return parseInt(tem[1], 10) || 0;
+    }
+    if (M[1] === 'Chrome') {
+        tem = ua.match(/\bOPR\/(\d+)/);
+        if (tem != null) {
+            return parseInt(tem[1], 10);
+        }
+    }
+    M = M[2] ? [M[1], M[2]] : [browser.appName, browser.appVersion, '-?'];
+    if ((tem = ua.match(/version\/(\d+)/i)) != null) {
+        M.splice(1, 1, tem[1]);
+    }
+    return parseInt(M[1], 10);
+}
+
+
+(function(history){
+    var pushState = history.pushState;
+    history.pushState = function(state) {
+        $.extend(true, state, {module:"leave"});
+        window.history.replaceState({module:'leave'}, '');
+        return pushState.apply(history, arguments);
+    };
+})(window.history);
+
+    
+//Fix popstate before load
+$(window).on('popstate', function(e) {
+    var state = e.originalEvent.state;
+    if (state && state.module === "leave") {
+        location.reload();
+    }   
+});
+
+$('[data-toggle="offcanvas"]').on('click', function () {
+    $('.row-offcanvas').toggleClass('active');
+});
+
+function invokeErrors(incoming_errors){
+        var errors = [];
+        
+        if ($('#form_errors').length > 0){
+            errors = $('#form_errors').data('errors');
+        }
+        
+        if (incoming_errors){
+            errors = incoming_errors;
+        }
+        
+        var scrolled = false;
+        $.each (errors ,function(obj , value){
+            
+            var form_element = $('#' +obj).parents('.form-group');
+            
+            if (!scrolled){
+                $('html,body').animate({scrollTop: form_element.offset().top});
+                scrolled = true;
+            }
+            
+            form_element.addClass('has-error');
+            form_element.find('.error-block').remove();
+            form_element.append('<span class="help-block error-block">' +value +'</span>');
+
+        });
+}
+
+// -------------
+// BTN-INPUT-FILE button with input type="file" solution
+// -------------
+$('.btn-input-file').on('click', function() {
+    $(this).next('input[type="file"]').trigger('click');
+});
+
+
+// LOADER CALL FUNCTION
+function callLoader(trigger) {
+    var container = trigger.closest('.loader_container');
+    var loaderTemplate = '<div class="loading_overlay"><i class="fa fa-refresh fa-spin" aria-hidden="true"></i></div>';
+
+    container.append(loaderTemplate);
+};
+
+
+jQuery(function($) {
+	
+	
+ // LOADER FOR LINKS (that take too long)
+ $('.call_loader').on('click', function() {
+ 	callLoader($(this));
+ });
+	
+  var AjaxButtonStatus = (function() {
+      //----------------------------------
+      //Add Loading status for all buttons
+      //This plugind requires custom css for .ajax_loading class
+      //mdrenska
+      //----------------------------------
+      function _appendSpinner($button) {
+        var hasSpinner = $button.find('.fa-spin').length > 0;
+
+        if (hasSpinner) {
+          return;
+        }
+
+        $button.prepend('<i class="fa fa-refresh fa-spin ajax_spinner"></i>');
+      }
+
+
+      var AjaxButtonStatus = function(container) {
+        this.$container = container;
+        this.loading = {};
+      };
+
+      AjaxButtonStatus.prototype.on = function() {
+        var self = this;
+        $(document).on('ajaxSend.loadingStatus', function(e, xhr, options) {
+          try {
+            self.onAjaxSend(e, xhr, options);
+          } catch (ex) {
+            console.log(ex);
+            self.enableAll();
+          }
+        });
+        $(document).on('ajaxComplete.loadingStatus', function(e, xhr, options) {
+          try {
+            self.onAjaxComplete(e, xhr, options);
+          } catch (ex) {
+            console.log(ex);
+            self.enableAll();
+          }
+        });
+      }
+
+      AjaxButtonStatus.prototype.off = function() {
+        $(document).off('ajaxSend.loadingStatus');
+        $(document).off('ajaxComplete.loadingStatus');
+      }
+
+      AjaxButtonStatus.prototype.onAjaxSend = function(e, xhr, options) {
+        var $trigger = $(e.target.activeElement);
+        var url = options.url;
+
+        if (!$trigger.hasClass('btn')) {
+          return;
+        }
+
+        $trigger.blur();
+        _appendSpinner($trigger);
+        this.loading[url] = $trigger;
+        this.toggleDisabledStatus($trigger, true);
+      }
+
+      AjaxButtonStatus.prototype.onAjaxComplete = function(e, xhr, options) {
+        var url = options.url;
+        var $trigger = this.loading[url];
+
+        if (!$trigger) {
+          return;
+        }
+
+        this.toggleDisabledStatus($trigger, false);
+      }
+
+      AjaxButtonStatus.prototype.toggleDisabledStatus = function($element, isDisabled) {
+        if (!$element.hasClass('btn')) {
+          return;
+        }
+
+        _appendSpinner($element);
+        $element.toggleClass('ajax_loading', isDisabled);
+        $element.toggleClass('disabled', isDisabled);
+        $element.attr('disabled', isDisabled);
+      }
+
+      AjaxButtonStatus.prototype.enableAll = function() {
+        for (var url in this.loading) {
+          var $button = this.loading[url];
+          this.toggleDisabledStatus($button, false);
+        }
+      }
+
+      return AjaxButtonStatus;
+  }());
+
+
+
+  $.fn.ajaxButtonStatus = function() {
+    return this.each(function () {
+        if (!$(this).data('ajax_status')) {
+            $(this).data('ajax_status', new AjaxButtonStatus($(this)));
+        }
+    });
+  }
+
+  var ajaxStatus = $(document).ajaxButtonStatus().data('ajax_status');
+  if (ajaxStatus && typeof(ajaxStatus.on) === 'function') {
+    ajaxStatus.on();
+  }
+
+
+  //Form submit status initialization
+  $('form').each(function() {
+    var options = {
+      showFlashMessagesInside: false,
+      showSuccessPage: false,
+      loadingLayerTimeout: 5000,
+    };
+
+    if ($(this).attr('data-show_flash') === 'true') {
+      options.showFlashMessagesInside = true;
+    }
+
+    if ($(this).attr('data-hide_after_submit') === 'true') {
+      options.showSuccessPage = true;
+    }
+	
+	if ($(this).attr('data-redirect_after_submit')) {
+      options.redirectAfterSubmit = $(this).attr('data-redirect_after_submit');
+    }
+	
+    if ($(this).attr('data-reset') === 'true') {
+      options.resetAfterSubmit = true;
+    }
+
+    if ($(this).attr('data-ajax') === 'true') {
+      options.isAjaxForm = true;
+    }
+
+    if ($(this).attr('data-loading_timeout') && !isNaN(parseInt($(this).attr('data-loading_timeout')))) {
+      var timeout = parseInt($(this).attr('data-loading_timeout'));
+      options.loadingLayerTimeout = timeout;
+    }
+
+    if ($(this).attr('data-hidden_form_message')) {
+      var raw = $(this).attr('data-hidden_form_message');
+      var temp = $('<div>').text(raw);
+      var escaped = temp.html();
+      options.successPage = {
+        data: {
+          message: escaped
+        }
+      };
+    }
+
+    if (typeof($.fn.formSubmitStatus) === 'function') {
+      $(this).formSubmitStatus(options);
+    }
+  });
+  
+  
+  $(document).on('click', '._login', function (e) {
+        var isOnLoginPage = $('#signInForm').length 
+          && $('#signInForm').parents('.modal-body').length === 0;
+        
+        if (isOnLoginPage) {
+          return;
+        }
+        e.preventDefault();
+
+        if (_identity == 'false') {
+            $.ajax(_root + '/academy/sign-in/index/', {
+                data: {
+                    modal: true
+                },
+                dataType: 'html',
+                type: 'GET'
+            }).done(function (data) {
+ 
+				$('#signInUser .modal-body').html(data);
+                $('#signInUser').modal('show');
+				
+				if ($.isFunction($.fn.googleSignin)){
+					$(document).googleSignin();
+				}
+
+                if (data === '{"success":1}') {
+
+                    _identity = 'true';
+                    $('#signInUser').modal('hide');
+                    return;
+                }
+				
+                // Login User
+                $('#signInForm').submit(function (e) {
+                    e.preventDefault();
+                    $.ajax(_root + '/academy/sign-in/index/', {
+                        data: $(this).serialize(),
+                        dataType: 'json',
+                        type: 'POST'
+                    }).done(function (data) {
+						
+                        if (data.success) {
+                            _identity = 'true';
+
+                            $('#signInUser').modal('hide');
+                            window.location = _root +'/dashboard';
+                        } else {
+                          var parsedErrors = {};
+                          parsedErrors['signin_password'] = data.error;
+                          invokeErrors(parsedErrors);
+                        }
+                    });
+                });
+
+                $('#signInForm .registration').on('click', function (e) {
+                    e.preventDefault();
+                    $.ajax(_root + '/academy/register/index/', {
+                        dataType: 'html',
+                        type: 'GET'
+                    }).done(function (data) {
+                        $('#signInUser .modal-body').html(data);
+                    });
+                });
+
+            });
+
+            return;
+        }
+    });
+
+  //fix for scrolling the main body instead of the open parent modal
+  // when bootbox is nested in another modal
+  $(document).on('hidden.bs.modal', '.bootbox', function (e) {
+      if($('.modal').hasClass('in')) {
+        $('body').addClass('modal-open');
+      }    
+  });
+
+  invokeErrors();       
+    
+  // SUBMIT LOADING
+  $(document).on('submit','form', function(){
+    if ($(this).parents('.modal').length > 0){
+        console.log($(':submit'));
+    }
+  }).on('click', 'a[href="#"]', function(e) {
+    e.preventDefault();
+  }).on('click', '.page-back', function() {
+    if (document.referrer.indexOf(document.domain) >= 0) {
+        if (history.length == 1) {
+            history.pushState({}, window.title, document.referrer);
+            location.reload();
+        } else {
+            history.back(-1);
+        }
+        
+    } else {
+        
+    }
+  });
+
+  // Bootstrap tooltip and popover init
+  $('[data-toggle="tooltip"]').tooltip({html:true});
+  $('[data-toggle="popover"]').popover({
+    'html' : true
+  });
+
+  // MOBILE MENU
+  $('.mobile-menu-toggle').on('click', function() {
+    var $this = $(this);
+    var menuId = $this.data('menu-id');
+    $('#' + menuId).addClass('open');
+    $('#mobileMenuUnderlay').addClass('active');
+    $this.addClass('active');
+    $('html, body').addClass('no-scroll');
+  });
+
+  $('#mobileMenuUnderlay').on('click', function() {
+    var $this = $(this);
+    $('.mobile-menu').removeClass('open');
+    $this.removeClass('active');
+    $('.mobile-menu-toggle').removeClass('active');
+    $('html, body').removeClass('no-scroll');
+  });
+
+  $('.mobile-menu').on('click', '.menu-close', function() {
+    $('.mobile-menu').removeClass('open');
+    $('#mobileMenuUnderlay').removeClass('active');
+    $('.mobile-menu-toggle').removeClass('active');
+    $('html, body').removeClass('no-scroll');
+  });
+  // end MOBILE MENU
+    
+    // COURSES
+    $(document).ready(function() {
+      setTimeout(function() {
+          $('.course-item').removeClass('loading');
+      }, 500);
+    });
+
+
+        
+
+    /* BOOTSTRAP TABS */
+    
+    // parse URL for tab step
+    // if($('.nav-tabs a[data-toggle="tab"]').length) {
+    //     var stepRegex = new RegExp(/\/tab-step\/([0-9]*)/g);
+    //     var stepRegexMatch = stepRegex.exec(location.href);
+    //     var tabStep = 1;
+    //     if(stepRegexMatch != undefined) {
+    //         tabStep = stepRegexMatch[1];
+    //     }
+        
+    //     var tabHrefRegex = new RegExp(/\/tab-href\/(.*)/g);
+    //     var tabHrefMatch = tabHrefRegex.exec(location.href);
+        
+    //     // Check whether there is a match for "tab-href" in url 
+    //     if (tabHrefMatch) {
+    //       var index_href = '';
+    //       $('.nav-tabs a[data-toggle="tab"]').each(function(index) {
+    //         if ($(this).attr('href') == '#'+tabHrefMatch[1])  {
+    //             // Show tab with same href as "tab-href"
+    //             $('.nav-tabs a[href="'+$(this).attr('href')+'"]').tab('show');
+    //             index_href = index + 1;
+    //         }
+    //       });
+          
+    //       if (index_href) {
+            
+    //         var curHistoryHref = window.location.href;
+    //         var newHistoryHref = curHistoryHref.substr(0,curHistoryHref.indexOf('tab-href')) + 'tab-step/' + index_href;
+            
+    //         history.replaceState({}, window.title, newHistoryHref);
+    //       }
+
+          
+          
+    //     } else {
+          
+    //       if($('.nav-tabs a[data-toggle="tab"]').length < tabStep) {
+    //           tabStep = 1;
+    //       }
+          
+    //       $('.nav-tabs a[data-toggle="tab"]').each(function(index) {
+    //           if((index + 1) == tabStep) { // steps are count from 1 but index from 0
+    //               // Show tab with "tab-step" index
+    //               $('.nav-tabs a[href="'+$(this).attr('href')+'"]').tab('show');
+    //           }
+    //       });
+    //     }
+        
+    //     $('a[data-toggle="tab"]').on('shown.bs.tab', function (e) {
+    //         var curTab = $(e.target);
+    //         // This prevent pushing tab-step to url where it is unwanted
+    //         if( typeof $(this).data('url_push') !== undefined && $(this).data('url_push') === false) {
+    //             return;
+    //         }
+    //         $('.nav-tabs a[data-toggle="tab"]').each(function(index) {
+    //             if(curTab.attr('href') == $(this).attr('href')) {
+    //                 var stepRegex = new RegExp(/\/tab-step\/([0-9]*)/g);
+    //                 var stepRegexMatch = stepRegex.exec(location.href);
+    //                 var lastHistoryHref = location.href;
+    //                 var newHistoryHref = location.href;
+                    
+    //                 // Get filterURL_id before add "tab-step" to history
+    //                 if (newHistoryHref.indexOf('?s=') > -1) {
+    //                   var filterURL_id = newHistoryHref.substring(newHistoryHref.indexOf('?s='));
+    //                   newHistoryHref = newHistoryHref.substring(0, window.location.href.indexOf('?s='));
+    //                 }
+                    
+    //                 if(stepRegexMatch != undefined) {
+    //                     newHistoryHref = newHistoryHref.replace(/(tab-step\/[0-9]*)/, 'tab-step/'+(index + 1));
+    //                 } else {
+    //                     newHistoryHref = newHistoryHref.replace(/\/$/, ''); // clear last '/' in url
+    //                     newHistoryHref = newHistoryHref+'/tab-step/'+(index + 1);
+    //                 }
+                    
+    //                 if (filterURL_id != undefined) {
+    //                   newHistoryHref = newHistoryHref + filterURL_id;
+    //                 }
+                    
+    //                 history.pushState({}, window.title, newHistoryHref);
+    //             }
+    //         });
+    //     });
+    // }
+    
+    // PZDatePicker.datepicker('.datepicker');
+    // PZDatePicker.datetimepicker('.datetimepicker');
+    
+    /* SEO */
+    
+    $.fn.initSEOEdit = function(shortName) {
+        $.ajax({
+            type: "POST",
+            url: _root + '/seo',
+            data: { short_name: shortName },
+            dataType: 'json'
+        })
+        .done(function(msg) {
+            if(msg != '') {
+                if(msg.modal != undefined) {
+                    $('body').append(msg.modal);
+                    
+                    $('#seoModal').on('click', '.btn-primary', function(e) {
+                        $.ajax({
+                            type: "POST",
+                            url: _root + '/seo',
+                            data: $('#seoModal form').serialize()
+                        })
+                        .done(function(msg) {
+                            if(msg != '') {
+                                msg = JSON.parse(msg);
+                                $('#seoModal .error').remove();
+                                if(msg.modal != undefined) {
+                                    $('#seo_edit_link').remove();
+                                    $('#seoModal').remove();
+                                    
+                                    $('body').append(msg.modal);
+                                } else {
+                                    if(msg.formerrors) {
+                                      for (var key in msg.formerrors) {
+                                        if (typeof msg.formerrors.hasOwnProperty(key) != undefined) {
+                                          $('#seoModal #' + key).after('<span class="error">' + msg.formerrors[key] + '</span>');
+                                        }
+                                      }
+                                    } else if(msg.success == 1) {
+                                        location.reload();
+                                    }
+                                }
+                            }
+                        });
+                    });
+                }
+            }
+        });
+    }
+    
+    /* MOODLE */
+    
+    $.fn.initMoodle = function() {
+        $.ajax({
+            type: "POST",
+            url: _root + '/moodle',
+            data: {  }
+        })
+        .done(function(msg) {
+            if(msg != '') {
+                msg = JSON.parse(msg);
+                if(msg.modal != undefined) {
+                    $('body').append(msg.modal);
+                }
+            }
+        });
+    }
+    
+    /* Unsolved Request */
+    
+    $.fn.initUnsolvedRequest = function() {
+        $.ajax({
+            type: "POST",
+            url: _root + '/unsolved-request',
+            data: {  }
+        })
+        .done(function(msg) {
+            if(msg != '') {
+                msg = JSON.parse(msg);
+                if(msg.modal != undefined) {
+                    $('body').append(msg.modal);
+                    
+                    $('#unsolvedRequestModal').modal('show');
+                }
+            }
+        });
+    }
+    //end teacher video
+});
+
+function alertSuccess(message, container) {
+    var appendIn = container ? container : $('.layout');
+    if (appendIn.find('.flash-message').length) {
+        appendIn.find('.flash-message').html('<div class="alert col-xs-12" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><p></p></div>');
+    } else {
+        appendIn.prepend('<div class="flash-message clearfix"><div class="alert col-xs-12" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><p></p></div></div>');
+    }
+    appendIn.find('.alert').addClass('alert-success');
+    appendIn.find('.alert p').text(message);
+}
+
+function alertError(message, container) {
+    var appendIn = container ? container : $('.layout');
+    if (appendIn.find('.flash-message').length) {
+        appendIn.find('.flash-message').html('<div class="alert col-xs-12" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><p></p></div>')
+    } else {
+       appendIn.prepend('<div style="display:none;" class="flash-message clearfix"><div class="alert col-xs-12" role="alert"> <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">&times;</span></button><p></p></div></div>');
+       appendIn.find('.flash-message').slideDown();
+    }
+    appendIn.find('.alert').addClass('alert-danger');
+    appendIn.find('.alert p').text(message);
+}
+
+var messagesNotificator = {
+    notificatorId : 'messages_notificator',
+    reloadTime : 60000, // in msseconds
+    messagesReloadTimeoutId : 0,
+    lastCount : 0, // if new messages count is different with last count - reload messages crud 
+    
+    init : function() {
+        this.reload(true);
+    },
+    
+    //init = true - initialize lastCount but not updating messagesCrud
+    reload : function(init) {
+        clearTimeout(messagesNotificator.messagesReloadTimeoutId);
+        
+        $.ajax({
+          type: "POST",
+          url: _root +'/messages/check',
+          data: { },
+          dataType: 'json'
+        })
+        .done(function(msg) {
+            if(msg != '') {
+                var messages = msg;
+                var hasMessages = messages.cnt != '0';
+                $('.'+messagesNotificator.notificatorId).parent().toggleClass('has-message', hasMessages);
+                $('.'+messagesNotificator.notificatorId).empty();
+                $('.'+messagesNotificator.notificatorId).append(messages.cnt);
+                $('#'+messagesNotificator.notificatorId+'_header').empty();
+                $('#'+messagesNotificator.notificatorId+'_header').append(messages.cnt);
+                
+                if(messagesNotificator.lastCount != messages.cnt && !init && typeof(messagesCrud) != 'undefined') {
+                    messagesCrud.update();
+                }
+                
+                messagesNotificator.lastCount = parseInt(messages.cnt);
+                
+                if (parseInt(messages.cnt)) {
+                    $('#dashboard-msg').removeClass('hidden');
+                    $('.navbar-home .navbar-toggle').addClass('has-msg');
+                }
+            }
+        });
+        
+        //messagesNotificator.messagesReloadTimeoutId = setTimeout("messagesNotificator.reload(false);", messagesNotificator.reloadTime);
+    }   
+};
+
+var userStatsChecker = {
+    reloadTime : 60000, // in msseconds
+    timeoutId : 0,
+    init : function() {
+        this.reload();
+    },
+    reload : function() {
+        clearTimeout(userStatsChecker.timeoutId);
+        
+        userStatsChecker.userStats = localStorage.getItem('userStats');
+        
+        if(userStatsChecker.userStats !== null) {
+            localStorage.removeItem('userStats');
+            $.ajax({
+                type: "POST",
+                url: _root +'/academy/user-stats/update',
+                data: {userStats: userStatsChecker.userStats},
+                dataType: 'json'
+            }).done(function(msg) {
+            });
+        }
+        userStatsChecker.timeoutId = setTimeout("userStatsChecker.reload();", userStatsChecker.reloadTime);
+    }
+};
+
+$(window).on('beforeunload', function(){
+    userStatsChecker.reload();
+});
+
+jQuery(document).ready(function() {
+    if(_identity != 'false' && _settings.module_notifications_messages == 1) {
+        messagesNotificator.init();
+        userStatsChecker.init();
+    }    
+});
+
+function b64EncodeUnicode(str) {
+  if (window.btoa) {
+    return btoa(encodeURIComponent(str).replace(/%([0-9A-F]{2})/g, function(match, p1) {
+        return String.fromCharCode('0x' + p1);
+    }));
+  }
+  return; 
+}
+
+
+// PRINT
+
+$(document).on('click', '[data-print]', function() {
+    var divId = $(this).data('print');
+
+    printDiv(divId);
+});
+
+function printDiv(divId) {
+    // Get the HTML of div
+    var divElements = document.getElementById(divId).innerHTML;
+    // Get the HTML of whole page
+    var oldPage = document.body.innerHTML;
+
+    // Reset the page's HTML with div's HTML only
+    document.body.innerHTML = '<html><head><title></title></head><body>' + divElements + '</body>';
+
+    // Print Page
+    window.print();
+
+    // Restore orignal HTML
+    document.body.innerHTML = oldPage;
+}
+
+// COUNTDOWN
+
+// set the date we're counting down to
+var target_date = new Date(_next_lesson_begindate).getTime();
+ 
+// variables for time units
+var days, hours, minutes, seconds;
+ 
+// get tag element
+var countdown = $('#countdowns');
+
+// update the tag with id "countdown" every 1 second
+if(_next_lesson_begindate != '') {
+    setInterval(function () {
+        
+        showHeaderReminder();
+     
+    }, 1000);
+} else {
+    window.name = '';
+}
+
+if(window.name == '') {
+    var removedIds15 = [];
+    var removedIds30 = [];
+    var removedIds60 = [];
+} else {
+    var tmp = JSON.parse(window.name);
+    var removedIds15 = tmp[0];
+    var removedIds30 = tmp[1];
+    var removedIds60 = tmp[2];
+}
+function showHeaderReminder() {
+    // find the amount of "seconds" between now and target
+    var current_date = new Date().getTime();
+    var minutes = 60;
+    
+    local_next_lesson = JSON.parse(_next_lesson_begindate);
+    
+    for(i in local_next_lesson) {
+        var target_date = new Date(local_next_lesson[i].date_begin).getTime();
+        var seconds_left = (target_date - current_date) / 1000;
+        
+        // do some time calculations
+        if(target_date > current_date) {
+            days = parseInt(seconds_left / 86400);
+            seconds_left = seconds_left % 86400;
+             
+            hours = parseInt(seconds_left / 3600);
+            seconds_left = seconds_left % 3600;
+             
+            minutes = parseInt(seconds_left / 60);
+            seconds = parseInt(seconds_left % 60);
+        } else {
+            minutes = '00';
+            seconds = '00';
+        }
+        
+        var skip = false;
+        
+        if($.inArray(local_next_lesson[i].id, removedIds15) >= 0 && minutes >= 0 && minutes < 15) {
+            skip = true;
+        }
+        if($.inArray(local_next_lesson[i].id, removedIds30) >= 0 && minutes >= 15 && minutes < 30) {
+            skip = true;
+        }
+        if($.inArray(local_next_lesson[i].id, removedIds60) >= 0 && minutes >= 30 && minutes < 60) {
+            skip = true;
+        }
+        
+        if(skip) {
+            if(countdown.html() == '') {
+                countdown.addClass('hidden');
+            }
+            
+            if(minutes < 30) {
+                removedIds60 = [];
+            }
+            
+            if(minutes < 15) {
+                removedIds30 = [];
+            }
+            
+            window.name = JSON.stringify(new Array(removedIds15, removedIds30, removedIds60));
+            
+            continue;
+        }
+        
+        if(target_date > current_date) {
+            if(minutes < 10){
+                minutes = '0'+minutes;
+            }
+            if(seconds < 10){
+                seconds = '0'+seconds;
+            }
+        }
+        
+        // format countdown string + set tag value
+        if($(countdown).find('#id_'+local_next_lesson[i].id).length == 0) { 
+            countdown.append('<div class="container"><span id="id_'+local_next_lesson[i].id+'" class="text"></span><a href="'+local_next_lesson[i].url+'" class="btn btn-tweeary">Виж детайли</a><span class="close pull-right"><i class="fa fa-close"></i></span></div>');
+            
+            $(countdown).on('click').off();
+            
+            $(countdown).on('click', '.fa-close', function() {
+                var id = $(this).parent().parent().find('.text').attr('id').replace('id_', '');
+                id = parseInt(id);
+                
+                for(j in local_next_lesson) {
+                    if(local_next_lesson[j].id == id) {
+                        var target_date = new Date(local_next_lesson[j].date_begin).getTime();
+                    }
+                }
+                
+                var seconds_left = (target_date - current_date) / 1000;
+                var checkMinutes = 0;
+                
+                // do some time calculations
+                if(target_date > current_date) {
+                    seconds_left = seconds_left % 3600;
+                    checkMinutes = parseInt(seconds_left / 60);
+                }
+                
+                if(checkMinutes > 15) {
+                    if(checkMinutes > 30) {
+                        removedIds60[removedIds60.length] = id;
+                    } else {
+                        removedIds30[removedIds30.length] = id;
+                    }
+                } else {
+                    removedIds15[removedIds15.length] = id;
+                }
+                
+                countdown.find('#id_'+id).parent().remove();
+                
+                window.name = JSON.stringify(new Array(removedIds15, removedIds30, removedIds60));
+                
+                if(countdown.html() == '') {
+                    countdown.addClass('hidden');
+                }
+            });
+        }
+        
+        if(countdown.html() != '') {
+            countdown.removeClass('hidden');
+        }
+        
+        countdown.find('#id_'+local_next_lesson[i].id).text(t('In ', null, false) + local_next_lesson[i].date_begin_print + t(' will begin at ', null, false) + '"'+local_next_lesson[i].name+'"' + t(' Time left: ', null, false) + minutes + t('m ', null, false) + ' ' + seconds + t('s .', null,false));
+    }
+
+}
+
+    $(document).ready(function(){
+    //Cookie Conscent Notification
+        window.cookieconsent_options = {
+        message: t('COOKIE_MESSAGE'),
+        learnMore:  t('CLICK_HERE'),
+        link: _root + '/декларация-за-поверителност#cookie_info',
+        theme: _root + '/js/lib/cookieconscent/academy-cookieconscent.css',
+        dismiss: t('I_AGREE'),
+        markup:  [
+            '<div class="cookieconsent {{containerClasses}}">',
+            '<div class="container">',
+            '<div class="row">',
+            '<div class="col-sm-9">',
+            '<p class="cookieconsent-message">{{options.message}} <a data-cc-if="options.link" target="{{ options.target }}" class="cookieconsent-link" href="{{options.link || "#null"}}">{{options.learnMore}}</a></p>',
+            '</div>',
+            '<div class="col-sm-3">',
+            '<a href="#" class="btn btn-tweeary btn-sm pull-right" data-cc-event="click:dismiss" target="_blank" >{{options.dismiss}}</a>',
+            '</div>',
+            '</div>',
+            '</div>',
+            '</div>'
+          ]
+        };
+        
+    //Plugin to support placholders on IE9
+      if(typeof($.fn.placeholder) === 'function') {
+        $('input').placeholder();
+      }
+
+
+    });
+    
+/* This function is a probe if the initialization of all ckeditors can be handle on single place */
+function initCKEditor(ckeditorId) {
+    var CKEditor = CKEDITOR.replace(ckeditorId, {
+    //skin: 'vcl',
+    enterMode: CKEDITOR.ENTER_BR,
+    language: _lang,
+    resize_enabled: false,
+    width: '100%',
+    height: '100%',
+
+    toolbar: [{
+      name: 'basicstyles',
+      items: ['Bold', 'Italic', 'Underline', 'RemoveFormat'] // 'Print'
+    }, 
+    {
+      name: 'styles',
+      items: ['Font', 'Format', 'FontSize'] // 'Font', 'Format', 'FontSize'
+    }, 
+    {
+      name: 'colors',
+      items: ['TextColor']
+    }, {
+      name: 'others',
+      items: ['NumberedList', 'BulletedList']
+    }, {
+      name: 'others',
+      items: ['FMathEditor']
+    }, { 
+      name: 'links', 
+      items: [ 'Link', 'Unlink'] 
+    }, {
+      name: 'document',
+      items: ['Source'] 
+    }],
+
+    uiColor: '#fdfdfd',
+
+    removePlugins: 'elementspath, pz_widget, pz_dictionary, pz_keypoint,ckeditor_wiris',
+	extraPlugins: 'FMathEditor'
+  });
+    
+    return CKEditor;
+}
+
+// CKEditor dialog and Bootstrap modal incompatibility fix 
+$.fn.modal.Constructor.prototype.enforceFocus = function () {
+    var $modalElement = this.$element;
+    $(document).on('focusin.modal', function (e) {
+        var $parent = $(e.target.parentNode);
+        if ($modalElement[0] !== e.target && !$modalElement.has(e.target).length
+            // add whatever conditions you need here:
+            &&
+            !$parent.hasClass('cke_dialog_ui_input_select') && !$parent.hasClass('cke_dialog_ui_input_text')) {
+            $modalElement.focus()
+        }
+    })
+};
+
+$(window).on('load', function(){
+  //Animate svg icons after the page has loaded 
+  setTimeout(function(){
+     $('.animated-icon').addClass('animate');
+   },1000);
+});
+
+
+$(document).ready(function(){
+    
+    //mdrenska: hack for android 2.3 iframe scroll problem
+    var androidVersion = getAndroidVersion();
+    if(androidVersion <= 2.3){
+      $('[name="viewport"]').attr("content","width=device-width, initial-scale=1.02");
+      $('body').addClass('android-23');
+    }
+
+    if($('#finishRegistrationModal').length > 0){
+        
+        $('#finishRegistrationModal').find('.modal-body').html('');
+     
+        $.ajax({
+            type: "POST",
+            url: _root + '/academy/social-login/finish-registration-modal',
+            dataType: 'json'
+        }).done(function (resp) {
+            if (resp.modal) {
+                if (resp.title) {
+                    $('#finishRegistrationModal').find('.modal-title').text(t(resp.title));
+                }
+                
+                $('#finishRegistrationModal').modal('show');
+                $('#finishRegistrationModal').find('.modal-body').html(resp.modal);
+
+                if (resp.data) {
+                    for (var i in resp.data) {
+                        $('#finishRegistrationModal').find('#languages_' + i).val(resp.data[i]);
+                    }
+                }
+                
+                // dynamicly add validation rules depend on registration step and user selection
+                function addValidationRules() {
+                    
+                    if ($('#finishRegistration').length > 0) {
+                        var registrationValidator = $('#finishRegistration').validate({
+                            errorElement: 'span',
+                            errorClass: "help-block",
+                            highlight: function (element) {
+                                $(element).parent().addClass("has-error");
+                            },
+                            unhighlight: function (element) {
+                                $(element).parent().removeClass("has-error");
+                            },
+                            success: 'valid',
+                            submitHandler: function (form) {
+                                form.submit();
+                            }
+                        });
+
+                        $('#full_birthdate').rules('add', {
+                            required: true,
+                            full_birthdate_regex: true,
+                            messages: {
+                                required: t('ENTER_YOUR_BIRTHDATE')
+                            }
+                        });
+
+                    }
+                }
+
+                function reinitBirthdate() {
+                    var birthdateParts = $('#finishRegistration #full_birthdate').val().split('-');
+                    $('#finishRegistration #date').val(birthdateParts[2]).change();
+                    $('#finishRegistration #month').val(birthdateParts[1]).change();
+                    $('#finishRegistration #year').val(birthdateParts[0]).change();
+                }
+
+                // VALIDATORS
+                if ($('#finishRegistration').length > 0) {
+
+                    // Validator configuration
+                    $.validator.setDefaults({
+                        ignore: []
+                    });
+
+                    $.validator.addMethod(
+                            "full_birthdate_regex",
+                            function (value, element) {
+                                var regexp = new RegExp(/^[0-9]{4}-[0-9]{2}-[0-9]{2}$/);
+                                return this.optional(element) || regexp.test(element.value);
+                            },
+                            t('MUST_SELECT_YOUR_BIRTHDAY', null, false)
+                            );
+
+                    // markup errors from back-end
+                    if ($('#finishRegistration #formerrors').length > 0) {
+                        if ($('#finishRegistration #formerrors').val() != 0) {
+                            reinitBirthdate();
+                        }
+                    }
+
+                    // birthdate select
+                    $('#finishRegistration #birthdate').on('change', 'select', function () {
+                        var birthdateParts = new Array();
+
+                        birthdateParts[0] = $('#year').val();
+                        birthdateParts[1] = $('#month').val();
+                        birthdateParts[2] = $('#date').val();
+
+                        $('#finishRegistration #full_birthdate').val(birthdateParts.join('-'));
+
+                    });
+                }
+
+                addValidationRules();
+            }
+        });
+        
+        $('#finishRegistrationModal button').on('click', function(e){
+            e.preventDefault();
+            if($('#parent_role').length > 0){ //|| $('#is_parent').val() == 1
+                if($('#parent_role').is(':checked')){ //|| $('#is_parent').val() == 1
+                    if($('#date').val() != '-1' && $('#month').val() != '-1' && $('#year').val()){
+                        var date = new Date();
+                        var yearsOld = new Date(new Date - new Date($('#full_birthdate').val())).getFullYear() - 1970; 
+                        if (yearsOld < 18) {
+                             var $validator = $("#finishRegistration").validate();
+                             var errors;
+                             // Build up errors object, name of input and error message:
+                             errors = {'meta[birthdate]': t('PARENTS_CAN_NOT_BE_UNDER_18')};
+                             // Show errors on the form
+                             $validator.showErrors(errors);
+                             return false;
+                        }
+                    }
+                }
+            }
+            $('#finishRegistration').submit();
+        });
+    }//end if   
+});
+
+//function to parse templates in hidden script tag
+function getPartialsFrom(templateId) {
+    var templates = {},
+        template = $($('#templates_container').html());
+
+    template.find('[data-partial]').each(function() {
+        var partialName = $(this).attr('data-partial'),
+            partialTemplate = $(this).clone();
+            partialTemplate.find('[data-partial]').remove();
+
+        templates[partialName] = partialTemplate;
+    });
+
+    templates['root'] = template.clone().removeClass('hidden');
+
+    templates['root'].find('[data-partial]').remove();
+    return templates;
+}
+
+
+function getAndroidVersion() {
+  var userAgent = navigator.userAgent,
+    androidversion = parseFloat(userAgent.slice(userAgent.indexOf("Android")+8)); 
+
+  return androidversion;
+}
+
+// $(document).on('change', '#lang', function() {
+  // if ($(this).val() == _lang) {
+    // return;
+  // }
+  // document.cookie = "language=" + $(this).val() + ";path=/";
+  // window.location.reload();
+// });
+// 
+// $(document).on('click', '#lang_bg', function() {
+  // if (_lang == 'bg') {
+    // return;
+  // }
+  // document.cookie = "language=bg;path=/";
+  // window.location.reload();
+// }).on('click', '#lang_en', function() {
+  // if (_lang == 'en') {
+    // return;
+  // }
+  // document.cookie = "language=en;path=/";
+  // window.location.reload();
+// }).on('click', '#lang_pl', function() {
+  // if (_lang == 'pl') {
+    // return;
+  // }
+  // document.cookie = "language=pl;path=/";
+  // window.location.reload();
+// }).on('click', '#lang_ar', function() {
+  // if (_lang == 'ar') {
+    // return;
+  // }
+  // document.cookie = "language=ar;path=/";
+  // window.location.reload();
+// });
+
+/**
+ * DATEPICKER INITIALIZATION
+ * Wrapper object to unify the plugin options for website's datepickers;
+ * Plugin url: http://t1m0n.name/air-datepicker/docs/
+ * Plugin requires custom css to work (_custom.scss)
+ */
+var PZDatePicker = (function() {
+  var datepickerOptions = {
+    onSelect: function(formattedDate, date, instance) {
+      instance.$el.trigger('change');
+    },
+    dateFormat: 'dd.mm.yyyy',
+    language: _lang
+  };
+
+  var datetimepickerOptions = {
+    onSelect: function(formattedDate, date, instance) {
+      instance.$el.trigger('change');
+    },
+    dateFormat: 'dd.mm.yyyy,',
+    timeFormat: 'hh:ii',
+    language: _lang,
+    timepicker: true,
+    minutesStep: 15
+  };
+
+  function _pluginIsLoaded() {
+    var isLoaded = typeof( $.fn.datepicker) === 'function'
+            && $.fn.datepicker.language;
+    return isLoaded;
+  }
+
+  return {
+    datepicker: function(selector) {
+      if (!_pluginIsLoaded()) {
+        return;
+      }
+
+      $(document).find(selector).datepicker(datepickerOptions);
+      return $(selector).data('datepicker');
+    },
+    datetimepicker: function(selector) {
+      if (!_pluginIsLoaded()) {
+        return;
+      }
+
+      $(document).find(selector).datepicker(datetimepickerOptions);
+      return $(selector).data('datepicker');
+    }
+  };
+}());
