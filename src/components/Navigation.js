@@ -70,10 +70,10 @@ export default function Navigation() {
       }}
     >
       <div className={classes.leftMenu}>
-        <Link className={classes.menuLink} to="/">
+        <Link className={classes.menuLink} to="/teacher/">
           <img alt="" className={classes.logo} height="6.2%" src={Logo}></img>
         </Link>
-        <Link className={classes.menuLink} to="/">
+        <Link className={classes.menuLink} to="/teacher/">
           <img
             alt=""
             className={classes.linkIcon}
@@ -81,7 +81,7 @@ export default function Navigation() {
             src={Home}
           ></img>
         </Link>
-        <Link className={classes.menuLink} to="/courses">
+        <Link className={classes.menuLink} to="/teacher/courses">
           <img
             alt=""
             className={classes.linkIcon}
@@ -89,7 +89,7 @@ export default function Navigation() {
             src={Course}
           ></img>
         </Link>
-        <Link className={classes.menuLink} to="/">
+        <Link className={classes.menuLink} to="/teacher/">
           <img
             alt=""
             className={classes.linkIcon}
@@ -97,7 +97,7 @@ export default function Navigation() {
             src={Profile}
           ></img>
         </Link>
-        <Link className={classes.menuLink} to="/">
+        <Link className={classes.menuLink} to="/teacher/">
           <img
             alt=""
             className={classes.linkIcon}
@@ -105,7 +105,7 @@ export default function Navigation() {
             src={Mail}
           ></img>
         </Link>
-        <Link className={classes.menuLink} to="/">
+        <Link className={classes.menuLink} to="/teacher/">
           <img
             alt=""
             className={classes.linkIcon}
@@ -113,7 +113,7 @@ export default function Navigation() {
             src={Settings}
           ></img>
         </Link>
-        <Link className={classes.menuLinkLast} to="/">
+        <Link className={classes.menuLinkLast} to="/teacher/">
           <img
             alt=""
             className={classes.linkIcon}

@@ -12,8 +12,6 @@ import Navigation from './components/NavigationParent';
 import TopicsPage from './components/TopicsPage';
 import Announcements from './components/Announcements';
 import Messenger from './components/Messenger';
-import CombinedCalendar from './components/Calendar/Combined';
-import CombinedCalendarSchedule from './components/Calendar/CombinedSchedule';
 
 const drawerWidth = 240;
 
@@ -89,34 +87,28 @@ export default function AppParent() {
         <Navigation />
         <Container>
           <Switch>
-            <Route path='/toast'>
+            <Route path='/parent/toast'>
               <Toast />
             </Route>
-            <Route path='/topic'>
+            <Route path='/parent/topic'>
               <TopicsPage />
             </Route>
-            <Route exact path='/'>
+            <Route exact path='/parent'>
               <Homepage />
             </Route>
-            <Route exact path='/ward'>
+            <Route exact path='/parent/ward'>
               <Ward />
             </Route>
-            <Route exact path='/ward/grades'>
+            <Route exact path='/parent/ward/grades'>
               <Grades />
             </Route>
-            <Route exact path='/ward/content'>
+            <Route exact path='/parent/ward/content'>
               <Content />
             </Route>
-            <Route exact path="/calendar">
-							<CombinedCalendar />
-						</Route>
-						<Route path='/calendar/:calendarSchedule'>
-							<CombinedCalendarSchedule />
-						</Route>
-            <Route exact path='/announcements'>
+            <Route exact path='/parent/announcements'>
               <Announcements />
             </Route>
-            <Route exact path='/messages'>
+            <Route exact path='/parent/messages'>
               <Messenger />
             </Route>
           </Switch>

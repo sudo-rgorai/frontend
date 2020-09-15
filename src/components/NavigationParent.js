@@ -140,25 +140,22 @@ export default function Navigation() {
         </div>
         <Divider />
         <List>
-          <Link to='/'>
+          <Link to='/parent/'>
             <ListItem button>
               <ListItemIcon><Home /></ListItemIcon>
               <ListItemText primary='Home' className={classes.menuItems} />
             </ListItem>
           </Link>
-          <Link to='/ward'>
+          <Link to='/parent/ward'>
             <ListItem button>
               <ListItemIcon><People /></ListItemIcon>
               <ListItemText primary='Ward' className={classes.menuItems} />
             </ListItem>
           </Link>
-          <Link to='/calendar'>
-            <ListItem button>
-              <ListItemIcon><CalendarToday /></ListItemIcon>
-              <ListItemText primary='Calendar' className={classes.menuItems} />
-            </ListItem>
-          </Link>
-          
+          <ListItem button>
+            <ListItemIcon><CalendarToday /></ListItemIcon>
+            <ListItemText primary='Calendar' className={classes.menuItems} />
+          </ListItem>
           <ListItem button>
             <ListItemIcon><LocalActivity /></ListItemIcon>
             <ListItemText primary='Activity' className={classes.menuItems} />
@@ -170,13 +167,13 @@ export default function Navigation() {
           </ListItem>
           <Collapse in={connectOpen} timeout="auto" unmountOnExit>
             <List component="div" disablePadding>
-              <Link to='/announcements'>
+              <Link to='/parent/announcements'>
                 <ListItem button className={classes.nested}>
                   <ListItemIcon><Announcement /></ListItemIcon>
                   <ListItemText primary="Announcements" className={classes.menuItems} />
                 </ListItem>
               </Link>
-              <Link to='/messages'>
+              <Link to='/parent/messages'>
                 <ListItem button className={classes.nested}>
                   <ListItemIcon><Chat /></ListItemIcon>
                   <ListItemText primary='Messages' className={classes.menuItems} />

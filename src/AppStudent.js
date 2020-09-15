@@ -81,28 +81,28 @@ function AppStudent() {
 						<div className={classes.appBarSpacer} />
 						<Container maxWidth="lg" className={classes.container}></Container>
 						<Switch>
-							<Route exact path="/">
+							<Route exact path="/student/">
 								<StudentHome />
 							</Route>
-							<Route path="/topics">
+							<Route path="/student/topics">
 								<TopicsPage />
 							</Route>
-							<Route path="/grade">
+							<Route path="/student/grade">
 								<Grade />
 							</Route>
-							<Route path="/perform">
+							<Route path="/student/perform">
 								<PerformAnanlysis />
 							</Route>
-							<Route path="/resources">
+							<Route path="/student/resources">
 								<Resources />
 							</Route>
-							<Route path="/submission">
+							<Route path="/student/submission">
 								<SubmissionContent />
 							</Route>
-							<Route path="/assign">
+							<Route path="/student/assign">
 								<Assign />
 							</Route>
-							<Route exact path="/courses">
+							<Route exact path="/student/courses">
 								<CoursePage />
 							</Route>
 						</Switch>
