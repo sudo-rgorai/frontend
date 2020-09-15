@@ -26,7 +26,6 @@ import Paper from "@material-ui/core/Paper";
 import Grid from "@material-ui/core/Grid";
 import NotificationsIcon from "@material-ui/icons/Notifications";
 import FlashOnIcon from "@material-ui/icons/FlashOn";
-import CreateClassroom from "../CreateClassroom";
 
 const useStyles = makeStyles((theme) => ({
 	formControl: {
@@ -56,7 +55,7 @@ function TabPanel(props) {
 
 	return (
 		<div
-			role="tabpanel"
+			role='tabpanel'
 			hidden={value !== index}
 			id={`scrollable-auto-tabpanel-${index}`}
 			aria-labelledby={`scrollable-auto-tab-${index}`}
@@ -119,10 +118,22 @@ function CombinedCalender() {
 							alignItems: "center",
 							position: "relative",
 							display: "flex",
-							marginLeft: "60%",
+							marginLeft: "70%",
 						}}>
+						<NotificationsIcon style={{ marginRight: "10px" }} />
+
 						<Modal />
-						<CreateClassroom />
+
+						<FlashOnIcon
+							style={{
+								backgroundColor: "black",
+								color: "#FFDD42",
+								width: "30px",
+								height: "30px",
+								borderRadius: "5px",
+								marginRight: "10px",
+							}}
+						/>
 					</div>
 				</div>
 				<div className={classes.root}>
@@ -130,8 +141,8 @@ function CombinedCalender() {
 						<Grid item xs={4} style={{ marginLeft: "-10%" }}>
 							<div className={classes.root}>
 								<AppBar
-									position="static"
-									color="default"
+									position='static'
+									color='default'
 									style={{
 										height: "5%",
 										border: "1px solid white",
@@ -140,16 +151,14 @@ function CombinedCalender() {
 									<Tabs
 										value={value}
 										onChange={handleChange1}
-										indicatorColor="primary"
-										variant="scrollable"
-										scrollButtons="auto"
+										indicatorColor='primary'
+										variant='scrollable'
+										scrollButtons='auto'
 										style={{ color: "black", backgroundColor: "white" }}
-
 										aria-label='scrollable auto tabs example'>
 										<Tab label='Calendar' {...a11yProps(0)} />
 										<Link to="/calendar/123"><Tab label='Schedule' {...a11yProps(1)}  /></Link>
 										<Tab label='Schedule' {...a11yProps(1)} />
-
 									</Tabs>
 								</AppBar>
 								<TabPanel value={value} index={0}>
@@ -178,12 +187,12 @@ function CombinedCalender() {
 											marginTop: "-30px",
 										}}>
 										<FormControl className={classes.formControl}>
-											<InputLabel id="demo-simple-select-label">
+											<InputLabel id='demo-simple-select-label'>
 												Type
 											</InputLabel>
 											<Select
-												labelId="demo-simple-select-label"
-												id="demo-simple-select"
+												labelId='demo-simple-select-label'
+												id='demo-simple-select'
 												value={type}
 												onChange={handleChange}>
 												<MenuItem value={"day"}>Day</MenuItem>

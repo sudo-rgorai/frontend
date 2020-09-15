@@ -12,6 +12,8 @@ import Navigation from './components/NavigationParent';
 import TopicsPage from './components/TopicsPage';
 import Announcements from './components/Announcements';
 import Messenger from './components/Messenger';
+import CombinedCalendar from './components/Calendar/Combined';
+import CombinedCalendarSchedule from './components/Calendar/CombinedSchedule';
 
 const drawerWidth = 240;
 
@@ -105,6 +107,12 @@ export default function AppParent() {
             <Route exact path='/ward/content'>
               <Content />
             </Route>
+            <Route exact path="/calendar">
+							<CombinedCalendar />
+						</Route>
+						<Route path='/calendar/:calendarSchedule'>
+							<CombinedCalendarSchedule />
+						</Route>
             <Route exact path='/announcements'>
               <Announcements />
             </Route>

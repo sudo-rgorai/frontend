@@ -3,7 +3,6 @@ import Modal from "react-bootstrap/Modal";
 import Button from "react-bootstrap/Button";
 import "bootstrap/dist/css/bootstrap.min.css";
 import AddEventForm from "./form";
-import { Add } from "@material-ui/icons";
 
 function MyVerticallyCenteredModal(props) {
 	const [backendData, setBackendData] = useState({});
@@ -25,14 +24,12 @@ function MyVerticallyCenteredModal(props) {
 	return (
 		<Modal
 			{...props}
-			size="40vw"
-			aria-labelledby="contained-modal-title-vcenter"
+			size='40vw'
+			aria-labelledby='contained-modal-title-vcenter'
 			centered>
 			<Modal.Header closeButton>
-
 				<Modal.Title id='contained-modal-title-vcenter'>
 					Create New Event
-
 				</Modal.Title>
 			</Modal.Header>
 			<Modal.Body>
@@ -54,14 +51,10 @@ export default function AddEventModal() {
 				Add Event
 			</Button> */}
 			<Button
-				variant="contained"
+				variant='contained'
 				onClick={() => setModalShow(true)}
-				style={{
-					backgroundColor: "#FFDD42",
-					marginRight: "10px",
-					fontSize: "14px",
-				}}>
-				Add Event
+				style={{ backgroundColor: "#FFDD42", marginRight: "10px" }}>
+				Create Event
 			</Button>
 
 			<MyVerticallyCenteredModal
