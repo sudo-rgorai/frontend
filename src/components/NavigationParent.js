@@ -152,10 +152,13 @@ export default function Navigation() {
               <ListItemText primary='Ward' className={classes.menuItems} />
             </ListItem>
           </Link>
-          <ListItem button>
-            <ListItemIcon><CalendarToday /></ListItemIcon>
-            <ListItemText primary='Calendar' className={classes.menuItems} />
-          </ListItem>
+          <Link to='/calendar'>
+            <ListItem button>
+              <ListItemIcon><CalendarToday /></ListItemIcon>
+              <ListItemText primary='Calendar' className={classes.menuItems} />
+            </ListItem>
+          </Link>
+          
           <ListItem button>
             <ListItemIcon><LocalActivity /></ListItemIcon>
             <ListItemText primary='Activity' className={classes.menuItems} />
