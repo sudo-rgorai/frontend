@@ -94,49 +94,49 @@ export default function AppTeacher() {
 						<div className={classes.appBarSpacer} />
 						<Container maxWidth="lg" className={classes.container}>
 							<Switch>
-								<Route path="/form" component={Modalform}>
+								<Route path="/teacher/form" component={Modalform}>
 									<Modalform />
 								</Route>
-								<Route exact path="/">
+								<Route exact path="/teacher/">
 									<TeacherHome />
 								</Route>
-								<Route exact path="/courses">
+								<Route exact path="/teacher/courses">
 									<CoursePage />
 								</Route>
-								<Route exact path="/courses/:courseId">
+								<Route exact path="/teacher/courses/:courseId">
 									<TopicsPage />
 								</Route>
-								<Route path="/calendar">
+								<Route path="/teacher/calendar">
 									<CombinedCalender />
 								</Route>
 								<Route path='/calendar/:calendarSchedule'>
 									<CombinedCalendarSchedule />
 								</Route>
-								<Route path="/assgn1">
+								<Route path="/teacher/assgn1">
 									<Step1 />
 								</Route>
-								<Route path="/addbatch">
+								<Route path="/teacher/addbatch">
 									<Batch />
 								</Route>
-								<Route path="/batch">
+								<Route path="/teacher/batch">
 									<Batch1 />
 								</Route>
-								<Route path="/assign">
+								<Route path="/teacher/assign">
 									<Assign />
 								</Route>
-								<Route path="/submission">
+								<Route path="/teacher/submission">
 									<SubmissionContent />
 								</Route>
-								<Route path="/announce">
+								<Route path="/teacher/announce">
 									<Announce />
 								</Route>
-								<Route path="/meeting">
+								<Route path="/teacher/meeting">
 									<Meeting />
 								</Route>
-								<Route path="/goto">
+								<Route path="/teacher/goto">
 									<Redirect />
 								</Route>
-								<Route path="/login/goto">
+								<Route path="/teacher/login/goto">
 									<Login />
 								</Route>
 							</Switch>

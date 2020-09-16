@@ -56,7 +56,7 @@ export default function ImgMediaCard() {
 				style={{ margin: "2px", marginLeft: "20px" }}
 			/>
 			<Chip icon={<PeopleIcon />} label="3" style={{ margin: "2px" }} />
-			<Link to="/assign" style={{ marginLeft: "5%" }}>
+			<Link to="/teacher/assign" style={{ marginLeft: "5%" }}>
 				<Button
 					className={classes.viewMore}
 					variant="outlined"
