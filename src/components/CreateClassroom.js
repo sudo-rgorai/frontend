@@ -23,7 +23,7 @@ import NotificationModal from "./NotificationModal";
 import { GroupAdd, OfflineBolt, PersonAdd, PostAdd } from "@material-ui/icons";
 const useStyles = makeStyles((theme) => ({
 	root: {
-		width: 500,
+		// width: 500,
 	},
 	typography: {
 		padding: theme.spacing(2),
