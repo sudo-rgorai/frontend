@@ -20,6 +20,8 @@ import PerformAnanlysis from "./components/Performance";
 import SubmissionContent from "./components/SubmisionContents";
 import Assign from "./components/Assignments/Assign";
 
+import './css/NoScrollbar.css'
+
 const theme = createMuiTheme({
 	palette: {
 		primary: {
@@ -54,6 +56,7 @@ const useStyles = makeStyles((theme) => ({
 		flexGrow: 1,
 		height: "100vh",
 		overflow: "auto",
+		overflowX: "hidden"
 	},
 	container: {
 		paddingTop: theme.spacing(4),
