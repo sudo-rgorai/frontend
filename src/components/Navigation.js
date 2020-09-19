@@ -89,7 +89,7 @@ export default function Navigation() {
             src={Course}
           ></img>
         </Link>
-        <Link className={classes.menuLink} to="/teacher/">
+        <Link className={classes.menuLink} to="/teacher/calendar">
           <img
             alt=""
             className={classes.linkIcon}
