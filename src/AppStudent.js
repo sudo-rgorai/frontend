@@ -11,16 +11,16 @@ import { amber, blueGrey, red } from "@material-ui/core/colors";
 import StudentHome from "./screens/StudentHome";
 import CoursePage from "./screens/CoursePage";
 
-import Nav from "./components/Nav";
-import Resources from "./components/Resources";
-import TopicsPage from "./components/TopicsPage";
-import Navigation from "./components/Nav";
-import Grade from "./components/GradePortal";
-import PerformAnanlysis from "./components/Performance";
-import SubmissionContent from "./components/SubmisionContents";
-import Assign from "./components/Assignments/Assign";
+import Nav from "./components/students/Nav";
+import Resources from "./components/students/Resources";
+import TopicsPage from "./components/students/TopicsPage";
+// import Navigation from "./components/Nav";
+import Grade from "./components/students/GradePortal";
+import PerformAnanlysis from "./components/students/Performance";
+import SubmissionContent from "./components/students/SubmisionContents";
+import Assign from "./components/students/Assignments/Assign";
 
-import './css/NoScrollbar.css'
+import "./css/NoScrollbar.css";
 
 const theme = createMuiTheme({
 	palette: {
@@ -56,7 +56,7 @@ const useStyles = makeStyles((theme) => ({
 		flexGrow: 1,
 		height: "100vh",
 		overflow: "auto",
-		overflowX: "hidden"
+		overflowX: "hidden",
 	},
 	container: {
 		paddingTop: theme.spacing(4),

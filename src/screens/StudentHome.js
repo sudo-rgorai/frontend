@@ -5,8 +5,8 @@ import { makeStyles } from "@material-ui/core/styles";
 import Grid from "@material-ui/core/Grid";
 import Typography from "@material-ui/core/Typography";
 
-import CreateClassroom from "../components/CreateClassroom";
-import TeacherTabs from "../components/TeacherTabs";
+import CreateClassroom from "../components/students/CreateClassroom";
+import TeacherTabs from "../components/students/TeacherTabs";
 
 const useStyles = makeStyles((theme) => ({
 	title: {
@@ -32,7 +32,7 @@ export default function HomePage() {
 	return (
 		<Grid container spacing={3}>
 			<Grid item xs={12} md={8} lg={9}>
-				<Typography variant='h2' gutterBottom className={classes.title}>
+				<Typography variant="h2" gutterBottom className={classes.title}>
 					Welcome Student!
 				</Typography>
 			</Grid>

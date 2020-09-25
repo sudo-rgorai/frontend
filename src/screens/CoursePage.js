@@ -14,8 +14,8 @@ import DropdownButton from "react-bootstrap/DropdownButton";
 import Dropdown from "react-bootstrap/Dropdown";
 
 import OfflineBoltIcon from "@material-ui/icons/OfflineBolt";
-import CoursesList from "../components/CoursesList";
-import CreateClassroom from "../components/CreateClassroom";
+import CoursesList from "../components/teachers/CoursesList";
+import CreateClassroom from "../components/teachers/CreateClassroom.js";
 import { Add } from "@material-ui/icons";
 
 const useStyles = makeStyles((theme) => ({
