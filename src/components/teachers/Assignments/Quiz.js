@@ -201,7 +201,7 @@ function QuizContent() {
 									borderRadius: "6px",
 								}}
 								key={row.name}>
-								<TableCell component="th" scope="row">
+								<TableCell component="th" scope="row" style={{width: "75%"}}>
 									{row.symbol}
 									{row.name}
 								</TableCell>

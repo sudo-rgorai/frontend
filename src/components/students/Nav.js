@@ -71,17 +71,17 @@ export default function Navigation() {
 				paper: clsx(classes.drawerPaper),
 			}}>
 			<div className={classes.leftMenu}>
-				<Link className={classes.menuLink} to="/students">
+				<Link className={classes.menuLink} to="/student">
 					<img alt="" className={classes.logo} height="6.2%" src={Logo}></img>
 				</Link>
-				<Link className={classes.menuLink} to="/students">
+				<Link className={classes.menuLink} to="/student">
 					<img
 						alt=""
 						className={classes.linkIcon}
 						height="3.8%"
 						src={Home}></img>
 				</Link>
-				<Link className={classes.menuLink} to="/students/courses">
+				<Link className={classes.menuLink} to="/student/courses">
 					<img
 						alt=""
 						className={classes.linkIcon}
@@ -96,7 +96,7 @@ export default function Navigation() {
 					style={{ width: "30px" }}
 					src={Groups}></img> */}
 				{/* </Link> */}
-				<Link className={classes.menuLink} to="/students/">
+				<Link className={classes.menuLink} to="/student/">
 					<img
 						alt=""
 						className={classes.linkIcon}
