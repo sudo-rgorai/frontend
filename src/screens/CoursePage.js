@@ -41,13 +41,13 @@ export default function CoursePage() {
 	const fixedHeightPaper = clsx(classes.paper, classes.fixedHeight);
 	return (
 		<Grid container spacing={3}>
-			<Grid item xs={12} md={8} lg={9}>
+			<Grid item xs={12} md={7} lg={6}>
 				<Typography variant="h3" gutterBottom className={classes.title}>
 					My Courseboard
 				</Typography>
 			</Grid>
 			<Typography>{"\n"}</Typography>
-			<Grid item xs={12} md={2} lg={2}>
+			<Grid item style={{textAlign: "right"}} xs={12} md={2} lg={4}>
 				<Button
 					variant="contained"
 					style={{
@@ -57,8 +57,8 @@ export default function CoursePage() {
 					<Add /> New Course
 				</Button>
 			</Grid>
-			<Grid item xs={12} md={2} lg={1}>
-				<CreateClassroom />
+			<Grid item xs={12} md={2} lg={2}>
+				<CreateClassroom style={{textAlign: "right"}} />
 			</Grid>
 			<Typography style={{ marginLeft: "2%", marginTop: "5px" }}>
 				Sort By:{" "}
