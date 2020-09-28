@@ -28,6 +28,12 @@ import NotificationsIcon from "@material-ui/icons/Notifications";
 import FlashOnIcon from "@material-ui/icons/FlashOn";
 
 const useStyles = makeStyles((theme) => ({
+	title: {
+		fontStyle: "normal",
+		fontWeight: "bold",
+		fontSize: "30px",
+		lineHeight: "35px",
+	},
 	formControl: {
 		margin: theme.spacing(1),
 		width: "100%",
@@ -110,9 +116,11 @@ function CombinedCalender() {
 						top: "6%",
 						display: "flex",
 						marginBottom: "2%",
-						marginLeft: "-7%",
+						marginLeft: "3%",
 					}}>
-					<h4>Calendar</h4>
+					<Typography variant="h2" gutterBottom className={classes.title}>
+						Calendar
+					</Typography>
 					<div
 						style={{
 							alignItems: "center",
@@ -145,8 +153,9 @@ function CombinedCalender() {
 									color='default'
 									style={{
 										height: "5%",
-										border: "1px solid white",
-										boxShadow: "unset",
+										background: '#FFFFFF',
+										boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
+										borderRadius: '8px',
 									}}>
 									<Tabs
 										value={value}
@@ -154,19 +163,25 @@ function CombinedCalender() {
 										indicatorColor='primary'
 										variant='scrollable'
 										scrollButtons='auto'
-										style={{ color: "black", backgroundColor: "white" }}
+										style={{
+											color: "black",
+											background: '#FFFFFF',
+											boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
+											borderRadius: '8px',
+											marginLeft: '0',
+										}}
 										aria-label='scrollable auto tabs example'>
 										<Tab label='Calendar' {...a11yProps(0)} />
-										<Link to="/calendar/123"><Tab label='Schedule' {...a11yProps(1)}  /></Link>
+										<Link to="/calendar/schedule"><Tab label='Schedule' {...a11yProps(1)}  /></Link>
 										<Tab label='Schedule' {...a11yProps(1)} />
 									</Tabs>
 								</AppBar>
-								<TabPanel value={value} index={0}>
+								{/*}<TabPanel value={value} index={0}>
 									<Calendar style={{ outline: "none" }} />
 								</TabPanel>
 								<TabPanel value={value} index={1}>
 									<Calendar style={{ outline: "none" }} />
-								</TabPanel>
+								</TabPanel> */}
 							</div>
 						</Grid>
 						<Grid item xs={9}>

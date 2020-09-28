@@ -97,7 +97,7 @@ function CombinedCalender() {
 
 	var today = new Date(),
 	month = today.toLocaleString();
-	
+
 	return (
 		<div>
 			<Container>
@@ -145,24 +145,29 @@ function CombinedCalender() {
 										indicatorColor='primary'
 										variant='scrollable'
 										scrollButtons='auto'
-										style={{ color: "black", backgroundColor: "white" }}
+										style={{
+											color: "black",
+											background: '#FFFFFF',
+											boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
+											borderRadius: '8px', 
+										}}
 										aria-label='scrollable auto tabs example'>
 										<Link to="/calendar"><Tab label='Calendar' {...a11yProps(0)} /></Link>
 										<Tab label='Schedule' {...a11yProps(1)}  />
 									</Tabs>
 								</AppBar>
-								<TabPanel value={value} index={0}>
+								{/*<TabPanel value={value} index={0}>
 									<Calendar style={{ outline: "none" }} />
 								</TabPanel>
 								<TabPanel value={value} index={1}>
 									<Calendar style={{ outline: "none" }} />
-								</TabPanel>
+								</TabPanel> */}
 							</div>
 						</Grid>
 						<Grid item xs={8}>
-							
+
 								<div style={{ marginTop: "10%" }}><Schedule /></div>
-							
+
 						</Grid>
 					</Grid>
 				</div>
