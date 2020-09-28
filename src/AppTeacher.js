@@ -15,21 +15,20 @@ import CoursePage from "./screens/CoursePage";
 import TopicsPage from "./screens/TopicsPage";
 import SigninPage from "./screens/SigninPage";
 
-import Navigation from "./components/Navigation";
-import Batch from "./components/AddBatch/Batch";
-import Batch1 from "./components/ModifiedBatch/Batch";
-import CombinedCalender from "./components/Calendar/Combined";
-import CombinedCalendarSchedule from "./components/Calendar/CombinedSchedule"
-import Modalform from "./components/ModalForm";
-import Assign from "./components/Assignments/Assign";
-import SideNavBar from "./components/NavBar";
-import Announce from "./components/Announcement";
-import Step1 from "./components/Assignment/Step1";
-import Meeting from "./components/meetings";
-import SubmissionContent from "./components/SubmisionContents";
-import Redirect from "./components/goto/redirect";
-import Login from "./components/goto/login";
-
+import Navigation from "./components/teachers/Navigation";
+import Batch from "./components/teachers/AddBatch/Batch";
+import Batch1 from "./components/teachers/ModifiedBatch/Batch";
+import CombinedCalender from "./components/teachers/Calendar/Combined";
+import CombinedCalendarSchedule from "./components/teachers/Calendar/CombinedSchedule";
+import Modalform from "./components/teachers/ModalForm";
+import Assign from "./components/teachers/Assignments/Assign";
+// import SideNavBar from "./components/NavBar";
+import Announce from "./components/teachers/Announcement";
+import Step1 from "./components/teachers/Assignment/Step1";
+import Meeting from "./components/teachers/meetings";
+import SubmissionContent from "./components/teachers/SubmisionContents";
+import Redirect from "./components/teachers/goto/redirect";
+import Login from "./components/teachers/goto/login";
 
 const theme = createMuiTheme({
 	palette: {
@@ -109,7 +108,7 @@ export default function AppTeacher() {
 								<Route path="/teacher/calendar">
 									<CombinedCalender />
 								</Route>
-								<Route path='/calendar/:calendarSchedule'>
+								<Route path="/calendar/:calendarSchedule">
 									<CombinedCalendarSchedule />
 								</Route>
 								<Route path="/teacher/assgn1">
