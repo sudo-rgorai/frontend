@@ -107,7 +107,7 @@ function CombinedCalender() {
 	if (type === "day") displayedComponent = <Day />;
 	else if (type === "month") displayedComponent = <Month />;
 	else if (type === "week") displayedComponent = <Week />;
-	else displayedComponent = <h5>Please select a tab</h5>;
+	else displayedComponent = <h5 style={{ textAlign: "center" }}>Please select a tab</h5>;
 	return (
 		<div>
 			<Container>
@@ -145,8 +145,8 @@ function CombinedCalender() {
 					</div>
 				</div>
 				<div className={classes.root}>
-					<Grid container spacing={2}>
-						<Grid item xs={4} style={{ marginLeft: "-10%" }}>
+					<Grid container spacing={1}>
+						<Grid item xs={4} >
 							<div className={classes.root}>
 								<AppBar
 									position='static'
@@ -161,19 +161,15 @@ function CombinedCalender() {
 										value={value}
 										onChange={handleChange1}
 										indicatorColor='primary'
-										variant='scrollable'
-										scrollButtons='auto'
 										style={{
 											color: "black",
 											background: '#FFFFFF',
 											boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
 											borderRadius: '8px',
-											marginLeft: '0',
 										}}
 										aria-label='scrollable auto tabs example'>
 										<Tab label='Calendar' {...a11yProps(0)} />
 										<Link to="/calendar/schedule"><Tab label='Schedule' {...a11yProps(1)}  /></Link>
-										<Tab label='Schedule' {...a11yProps(1)} />
 									</Tabs>
 								</AppBar>
 								{/*}<TabPanel value={value} index={0}>
@@ -184,7 +180,7 @@ function CombinedCalender() {
 								</TabPanel> */}
 							</div>
 						</Grid>
-						<Grid item xs={9}>
+						<Grid item xs={9} style={{ marginRight: "-10%"}}>
 							<Paper className={classes.paper} style={{ height: "50px" }}>
 								<div
 									style={{
@@ -226,10 +222,12 @@ function CombinedCalender() {
 											</Select> */}
 									</div>
 								</div>
-								<div style={{ marginTop: "10%" }}>{displayedComponent}</div>
 							</Paper>
 						</Grid>
 					</Grid>
+
+
+					<div style={{ marginTop: "10%" }}>{displayedComponent}</div>
 				</div>
 				{/* <Row>
 					<Col>

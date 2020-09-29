@@ -29,6 +29,12 @@ import { Link } from "react-router-dom";
 
 
 const useStyles = makeStyles((theme) => ({
+	title: {
+		fontStyle: "normal",
+		fontWeight: "bold",
+		fontSize: "30px",
+		lineHeight: "35px",
+	},
 	formControl: {
 		margin: theme.spacing(1),
 		width: "100%",
@@ -107,7 +113,9 @@ function CombinedCalender() {
 						display: "flex",
 						marginBottom: "2%",
 					}}>
-					<h4>Calender</h4>
+					<Typography variant="h2" gutterBottom className={classes.title}>
+						Schedule
+					</Typography>
 					<div
 						style={{
 							alignItems: "center",
@@ -143,13 +151,11 @@ function CombinedCalender() {
 										value={value}
 										onChange={handleChange1}
 										indicatorColor='primary'
-										variant='scrollable'
-										scrollButtons='auto'
 										style={{
 											color: "black",
 											background: '#FFFFFF',
 											boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
-											borderRadius: '8px', 
+											borderRadius: '8px',
 										}}
 										aria-label='scrollable auto tabs example'>
 										<Link to="/calendar"><Tab label='Calendar' {...a11yProps(0)} /></Link>
@@ -164,7 +170,7 @@ function CombinedCalender() {
 								</TabPanel> */}
 							</div>
 						</Grid>
-						<Grid item xs={8}>
+						<Grid item xs={12}>
 
 								<div style={{ marginTop: "10%" }}><Schedule /></div>
 
