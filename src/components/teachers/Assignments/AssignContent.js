@@ -213,7 +213,7 @@ function AssignContent() {
 												marginRight: "10px",
 											}}
 										/>
-										<Link to="/submission">
+										<Link to="/teacher/submission">
 											<Button
 												variant="contained"
 												style={{

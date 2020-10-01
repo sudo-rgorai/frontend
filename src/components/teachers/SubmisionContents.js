@@ -213,8 +213,8 @@ function SubmissionContent() {
 							</div>
 						</Grid>
 					</Paper>
-
-					<Grid item xs={9}>
+					<Grid item xs={1}></Grid>
+					<Grid item xs={7}>
 						<Paper className={classes.paper}>
 							<div
 								className={classes.search}
