@@ -27,6 +27,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Paper from "@material-ui/core/Paper";
 import { Link } from "react-router-dom";
+import ModalForm from "../ModalForm";
 function createData(symbol, name, date) {
 	return { symbol, name, date };
 }
@@ -211,18 +212,18 @@ function AssignContent() {
 												marginRight: "10px",
 											}}
 										/>
-										<Link to="/student/assignment">
-											<Button
-												variant="contained"
-												style={{
-													fontSize: "12px",
-													textTransform: "unset",
-													fontWeight: "600",
-													boxShadow: "unset",
-												}}>
-												View Submission
-											</Button>
-										</Link>
+										{/* <Link to="/student/assignment"> */}
+										<Button
+											variant="contained"
+											style={{
+												fontSize: "12px",
+												textTransform: "unset",
+												fontWeight: "600",
+												boxShadow: "unset",
+											}}>
+											<ModalForm />
+										</Button>
+										{/* </Link> */}
 
 										<button
 											style={{

@@ -92,19 +92,17 @@ export default function CreateClassroom() {
 								</p>
 							</Card>
 							<Card className={classes.hoverstyle}>
-								<Link to="/student/assignment">
-									<AssignmentIcon style={customStyle} />
-									<p
-										style={{
-											fontSize: "12px",
-											marginLeft: "5px",
-											textAlign: "center",
-											color: "blue",
-											cursor: "pointer",
-										}}>
-										Upload Assignment
-									</p>
-								</Link>
+								<AssignmentIcon style={customStyle} />
+								<p
+									style={{
+										fontSize: "12px",
+										marginLeft: "5px",
+										textAlign: "center",
+										color: "blue",
+										cursor: "pointer",
+									}}>
+									<ModalForm />
+								</p>
 							</Card>
 							<Card className={classes.hoverstyle}>
 								<LaptopChromebookIcon style={customStyle} />
@@ -136,19 +134,19 @@ export default function CreateClassroom() {
 							</Card>
 
 							<Card className={classes.hoverstyle}>
-								<Link to="/student/assignment">
-									<HelpOutlineIcon style={customStyle} />
-									<p
-										style={{
-											fontSize: "12px",
+								{/* <Link to="/student/assignment"> */}
+								<HelpOutlineIcon style={customStyle} />
+								<p
+									style={{
+										fontSize: "12px",
 
-											textAlign: "center",
-											color: "blue",
-											cursor: "pointer",
-										}}>
-										Take Quiz
-									</p>
-								</Link>
+										textAlign: "center",
+										color: "blue",
+										cursor: "pointer",
+									}}>
+									<QuizModal />
+								</p>
+								{/* </Link> */}
 							</Card>
 							<Card className={classes.hoverstyle}>
 								<Link

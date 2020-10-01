@@ -156,20 +156,20 @@ function QuizContent() {
 				/>
 			</div>
 			<div className="buttonGroup" style={{ float: "right", marginTop: "3%" }}>
-				<Link to="/student/assignment">
-					<Button
-						variant="outlined"
-						style={{
-							backgroundColor: "gold",
-							border: "2px solid gold",
-							fontWeight: "600",
-							textTransform: "unset",
-							fontSize: "16px",
-							height: "45px",
-						}}>
-						View Quiz
-					</Button>
-				</Link>
+				{/* <Link to="/student/assignment"> */}
+				<Button
+					variant="outlined"
+					style={{
+						backgroundColor: "gold",
+						border: "2px solid gold",
+						fontWeight: "600",
+						textTransform: "unset",
+						fontSize: "16px",
+						height: "45px",
+					}}>
+					<QuizModal />
+				</Button>
+				{/* </Link> */}
 				{/* <FormControl className={classes.formControl}>
 					<InputLabel id='demo-simple-select-label'>More</InputLabel>
 					<Select
