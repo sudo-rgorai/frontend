@@ -146,10 +146,10 @@ function SubmissionContent() {
 				<Breadcrumbs
 					separator={<NavigateNextIcon fontSize="small" />}
 					aria-label="breadcrumb">
-					<Link color="inherit" to="/courses">
+					<Link color="inherit" to="/student/courses">
 						My Courseboard
 					</Link>
-					<Link color="inherit" to="/assign">
+					<Link color="inherit" to="/student/assign">
 						Class Name 1
 					</Link>
 					<Typography color="textPrimary">Assignment 1 Submission</Typography>
@@ -213,8 +213,8 @@ function SubmissionContent() {
 							</div>
 						</Grid>
 					</Paper>
-
-					<Grid item xs={9}>
+					<Grid item xs={1}></Grid>
+					<Grid item xs={7}>
 						<Paper className={classes.paper}>
 							<div
 								className={classes.search}

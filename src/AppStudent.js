@@ -21,6 +21,7 @@ import SubmissionContent from "./components/students/SubmisionContents";
 import Assign from "./components/students/Assignments/Assign";
 
 import "./css/NoScrollbar.css";
+import SingleView from "./components/students/SingleView";
 
 const theme = createMuiTheme({
 	palette: {
@@ -104,6 +105,9 @@ function AppStudent() {
 							</Route>
 							<Route path="/student/assign">
 								<Assign />
+							</Route>
+							<Route path="/student/assignment">
+								<SingleView />
 							</Route>
 							<Route exact path="/student/courses">
 								<CoursePage />

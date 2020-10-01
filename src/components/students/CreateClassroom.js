@@ -23,6 +23,7 @@ import NotificationModal from "./NotificationModal";
 import CreateCourse from "./CreateCourse";
 import ModalForm from "./ModalForm";
 import QuizModal from "./QuizModal";
+import ViewStudy from "./Course/ViewStudy";
 import {
 	GroupAdd,
 	OfflineBolt,
@@ -30,6 +31,7 @@ import {
 	PostAdd,
 	Stars,
 } from "@material-ui/icons";
+import TopicsDataGrid from "./Course/TopicsDataGrid";
 const useStyles = makeStyles((theme) => ({
 	root: {
 		width: 500,
@@ -86,21 +88,23 @@ export default function CreateClassroom() {
 										color: "blue",
 										cursor: "pointer",
 									}}>
-									<CreateCourse />
+									<TopicsDataGrid />
 								</p>
 							</Card>
 							<Card className={classes.hoverstyle}>
-								<AssignmentIcon style={customStyle} />
-								<p
-									style={{
-										fontSize: "12px",
-										marginLeft: "5px",
-										textAlign: "center",
-										color: "blue",
-										cursor: "pointer",
-									}}>
-									<ModalForm />
-								</p>
+								<Link to="/student/assignment">
+									<AssignmentIcon style={customStyle} />
+									<p
+										style={{
+											fontSize: "12px",
+											marginLeft: "5px",
+											textAlign: "center",
+											color: "blue",
+											cursor: "pointer",
+										}}>
+										Upload Assignment
+									</p>
+								</Link>
 							</Card>
 							<Card className={classes.hoverstyle}>
 								<LaptopChromebookIcon style={customStyle} />
@@ -123,28 +127,32 @@ export default function CreateClassroom() {
 										fontSize: "12px",
 
 										textAlign: "center",
+										color: "blue",
+										cursor: "pointer",
 									}}>
-									<SimpleCard />
+									<ViewStudy />
 								</h2>
 								{/* </Link> */}
 							</Card>
 
 							<Card className={classes.hoverstyle}>
-								<HelpOutlineIcon style={customStyle} />
-								<p
-									style={{
-										fontSize: "12px",
+								<Link to="/student/assignment">
+									<HelpOutlineIcon style={customStyle} />
+									<p
+										style={{
+											fontSize: "12px",
 
-										textAlign: "center",
-										color: "blue",
-										cursor: "pointer",
-									}}>
-									<QuizModal />
-								</p>
+											textAlign: "center",
+											color: "blue",
+											cursor: "pointer",
+										}}>
+										Take Quiz
+									</p>
+								</Link>
 							</Card>
 							<Card className={classes.hoverstyle}>
 								<Link
-									to="/perform"
+									to="/student/perform"
 									style={{
 										color: "blue",
 										fontWeight: "400",

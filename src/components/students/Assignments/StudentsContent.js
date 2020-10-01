@@ -217,7 +217,7 @@ function AssignContent() {
 								</TableCell>
 								<TableCell align="right">
 									<div>
-										<Link to="/perform">
+										<Link to="/student/perform">
 											<Button
 												variant="contained"
 												style={{
