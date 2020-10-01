@@ -111,144 +111,149 @@ function CombinedCalender() {
 	return (
 		<div>
 			<Container>
-				<div
-					style={{
-						top: "6%",
-						display: "flex",
-						marginBottom: "2%",
-						marginLeft: "3%",
-					}}>
-					<Typography variant="h2" gutterBottom className={classes.title}>
-						Calendar
-					</Typography>
-					<div
-						style={{
-							alignItems: "center",
-							position: "relative",
-							display: "flex",
-							marginLeft: "70%",
-						}}>
-						<NotificationsIcon style={{ marginRight: "10px" }} />
-
-						<Modal />
-
-						<FlashOnIcon
+				<Grid container spacing={3}>
+					<Grid item xs={12} md={8} lg={9}>
+						<div
 							style={{
-								backgroundColor: "black",
-								color: "#FFDD42",
-								width: "30px",
-								height: "30px",
-								borderRadius: "5px",
-								marginRight: "10px",
-							}}
-						/>
-					</div>
-				</div>
-				<div className={classes.root}>
-					<Grid container spacing={1}>
-						<Grid item xs={4} >
-							<div className={classes.root}>
-								<AppBar
-									position='static'
-									color='default'
+								top: "6%",
+								display: "flex",
+								marginBottom: "2%",
+								marginLeft: "3%",
+							}}>
+								<Typography variant="h2" gutterBottom className={classes.title}>
+									Calendar
+								</Typography>
+							</div>
+						</Grid>
+						<Grid item xs={12} md={4} lg={3}>
+							<div
+								style={{
+									alignItems: "center",
+									position: "relative",
+									display: "flex",
+								}}>
+								<NotificationsIcon style={{ marginRight: "10px" }} />
+
+								<Modal />
+
+								<FlashOnIcon
 									style={{
-										height: "5%",
-										background: '#FFFFFF',
-										boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
-										borderRadius: '8px',
-									}}>
-									<Tabs
-										value={value}
-										onChange={handleChange1}
-										indicatorColor='primary'
+										backgroundColor: "black",
+										color: "#FFDD42",
+										width: "30px",
+										height: "30px",
+										borderRadius: "5px",
+										marginRight: "10px",
+									}}
+								/>
+							</div>
+					</Grid>
+					<div className={classes.root}>
+						<Grid container spacing={1}>
+							<Grid item xs={4} >
+								<div className={classes.root}>
+									<AppBar
+										position='static'
+										color='default'
 										style={{
-											color: "black",
+											height: "5%",
 											background: '#FFFFFF',
 											boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
 											borderRadius: '8px',
-										}}
-										aria-label='scrollable auto tabs example'>
-										<Tab label='Calendar' {...a11yProps(0)} />
-										<Link to="/calendar/schedule"><Tab label='Schedule' {...a11yProps(1)}  /></Link>
-									</Tabs>
-								</AppBar>
-								{/*}<TabPanel value={value} index={0}>
-									<Calendar style={{ outline: "none" }} />
-								</TabPanel>
-								<TabPanel value={value} index={1}>
-									<Calendar style={{ outline: "none" }} />
-								</TabPanel> */}
-							</div>
-						</Grid>
-						<Grid item xs={9} style={{ marginRight: "-10%"}}>
-							<Paper className={classes.paper} style={{ height: "50px" }}>
-								<div
-									style={{
-										display: "flex",
-
-										marginRight: "10px",
-									}}>
-									<ArrowLeftIcon />
-									<ArrowRightIcon />
-									<p style={{ fontSize: "15px" }}>{month} </p>
+										}}>
+										<Tabs
+											value={value}
+											onChange={handleChange1}
+											indicatorColor='primary'
+											style={{
+												color: "black",
+												background: '#FFFFFF',
+												boxShadow: '0px 4px 8px rgba(0, 0, 0, 0.05)',
+												borderRadius: '8px',
+											}}
+											aria-label='scrollable auto tabs example'>
+											<Tab label='Calendar' {...a11yProps(0)} />
+											<Link to="/calendar/schedule"><Tab label='Schedule' {...a11yProps(1)}  /></Link>
+										</Tabs>
+									</AppBar>
+									{/*}<TabPanel value={value} index={0}>
+										<Calendar style={{ outline: "none" }} />
+									</TabPanel>
+									<TabPanel value={value} index={1}>
+										<Calendar style={{ outline: "none" }} />
+									</TabPanel> */}
+								</div>
+							</Grid>
+							<Grid item xs={9} style={{ marginRight: "-10%"}}>
+								<Paper className={classes.paper} style={{ height: "50px" }}>
 									<div
 										style={{
-											marginLeft: "50%",
-											alignItems: "center",
-											marginTop: "-30px",
+											display: "flex",
+
+											marginRight: "10px",
 										}}>
-										<FormControl className={classes.formControl}>
-											<InputLabel id='demo-simple-select-label'>
-												Type
-											</InputLabel>
-											<Select
-												labelId='demo-simple-select-label'
-												id='demo-simple-select'
-												value={type}
-												onChange={handleChange}>
-												<MenuItem value={"day"}>Day</MenuItem>
-												<MenuItem value={"week"}>Week</MenuItem>
-												<MenuItem value={"month"}>Month</MenuItem>
-											</Select>
-										</FormControl>
-										{/* <Select
-												labelId='demo-simple-select-label'
-												id='outlined-basic'
-												value={type}
-												onChange={handleChange}>
-												<MenuItem value={"day"}>Day</MenuItem>
-												<MenuItem value={"week"}>Week</MenuItem>
-												<MenuItem value={"month"}>Month</MenuItem>
-											</Select> */}
+										<ArrowLeftIcon />
+										<ArrowRightIcon />
+										<p style={{ fontSize: "15px" }}>{month} </p>
+										<div
+											style={{
+												marginLeft: "50%",
+												alignItems: "center",
+												marginTop: "-30px",
+											}}>
+											<FormControl className={classes.formControl}>
+												<InputLabel id='demo-simple-select-label'>
+													Type
+												</InputLabel>
+												<Select
+													labelId='demo-simple-select-label'
+													id='demo-simple-select'
+													value={type}
+													onChange={handleChange}>
+													<MenuItem value={"day"}>Day</MenuItem>
+													<MenuItem value={"week"}>Week</MenuItem>
+													<MenuItem value={"month"}>Month</MenuItem>
+												</Select>
+											</FormControl>
+											{/* <Select
+													labelId='demo-simple-select-label'
+													id='outlined-basic'
+													value={type}
+													onChange={handleChange}>
+													<MenuItem value={"day"}>Day</MenuItem>
+													<MenuItem value={"week"}>Week</MenuItem>
+													<MenuItem value={"month"}>Month</MenuItem>
+												</Select> */}
+										</div>
 									</div>
-								</div>
-							</Paper>
+								</Paper>
+							</Grid>
 						</Grid>
-					</Grid>
 
 
-					<div style={{ marginTop: "10%" }}>{displayedComponent}</div>
-				</div>
-				{/* <Row>
-					<Col>
-						<Calendar onChange={this.onChange} value={this.state.date} />
-					</Col>
-					<Col md={2}>
-						<InputLabel id='demo-simple-select-label'>Show By</InputLabel>
-						<Select
-							labelId='demo-simple-select-label'
-							id='demo-simple-select'
-							value={type}
-							onChange={handleChange}>
-							<MenuItem value={"day"}>Day</MenuItem>
-							<MenuItem value={"week"}>Week</MenuItem>
-							<MenuItem value={"month"}>Month</MenuItem>
-						</Select>
-					</Col>
-					<Col md={{ span: 2, offset: 8 }}>
-						<Modal />
-					</Col>
-				</Row> */}
+						<div style={{ marginTop: "10%" }}>{displayedComponent}</div>
+					</div>
+					{/* <Row>
+						<Col>
+							<Calendar onChange={this.onChange} value={this.state.date} />
+						</Col>
+						<Col md={2}>
+							<InputLabel id='demo-simple-select-label'>Show By</InputLabel>
+							<Select
+								labelId='demo-simple-select-label'
+								id='demo-simple-select'
+								value={type}
+								onChange={handleChange}>
+								<MenuItem value={"day"}>Day</MenuItem>
+								<MenuItem value={"week"}>Week</MenuItem>
+								<MenuItem value={"month"}>Month</MenuItem>
+							</Select>
+						</Col>
+						<Col md={{ span: 2, offset: 8 }}>
+							<Modal />
+						</Col>
+					</Row> */}
+				</Grid>
 			</Container>
 		</div>
 	);
