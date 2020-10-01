@@ -27,8 +27,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Paper from "@material-ui/core/Paper";
 import { ModalFooter } from "react-bootstrap";
-import ModalForm from "../ModalForm";
-import QuizModal from "../QuizModal";
+import ModalForm from "../QuizModal";
 import { Link } from "react-router-dom";
 function createData(symbol, name, date) {
 	return { symbol, name, date };
@@ -132,7 +131,7 @@ const useStyles = makeStyles((theme) => ({
 		minWidth: 240,
 	},
 }));
-function QuizContent() {
+function AssignContent() {
 	const classes = useStyles();
 	const [age, setAge] = React.useState("");
 	const handleChange = (event) => {
@@ -147,7 +146,7 @@ function QuizContent() {
 					<Search />
 				</div>
 				<InputBase
-					placeholder="Search Assignment ..."
+					placeholder="Search Quiz ..."
 					classes={{
 						root: classes.inputRoot,
 						input: classes.inputInput,
@@ -166,7 +165,7 @@ function QuizContent() {
 						fontSize: "16px",
 						height: "45px",
 					}}>
-					<QuizModal />
+					<ModalForm />
 				</Button>
 				{/* <FormControl className={classes.formControl}>
 					<InputLabel id='demo-simple-select-label'>More</InputLabel>
@@ -201,7 +200,7 @@ function QuizContent() {
 									borderRadius: "6px",
 								}}
 								key={row.name}>
-								<TableCell component="th" scope="row" style={{width: "75%"}}>
+								<TableCell component="th" scope="row">
 									{row.symbol}
 									{row.name}
 								</TableCell>
@@ -214,7 +213,7 @@ function QuizContent() {
 												marginRight: "10px",
 											}}
 										/>
-										<Link to="/submission">
+										<Link to="/teacher/submission">
 											<Button
 												variant="contained"
 												style={{
@@ -261,4 +260,4 @@ function QuizContent() {
 	);
 }
 
-export default QuizContent;
+export default AssignContent;
