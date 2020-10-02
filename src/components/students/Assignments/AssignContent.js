@@ -27,6 +27,7 @@ import TableRow from "@material-ui/core/TableRow";
 import TextareaAutosize from "@material-ui/core/TextareaAutosize";
 import Paper from "@material-ui/core/Paper";
 import { Link } from "react-router-dom";
+import ModalForm from "../ModalForm";
 function createData(symbol, name, date) {
 	return { symbol, name, date };
 }
@@ -153,17 +154,18 @@ function AssignContent() {
 				/>
 			</div>
 			<div className="buttonGroup" style={{ float: "right", marginTop: "3%" }}>
-				<Button
-					variant="outlined"
-					style={{
-						backgroundColor: "gold",
-						border: "2px solid gold",
-						fontWeight: "600",
-						textTransform: "unset",
-					}}>
-					View Assignment
-				</Button>
-
+				<Link to="/student/submission">
+					<Button
+						variant="outlined"
+						style={{
+							backgroundColor: "gold",
+							border: "2px solid gold",
+							fontWeight: "600",
+							textTransform: "unset",
+						}}>
+						View Assignment
+					</Button>
+				</Link>
 				{/* <FormControl className={classes.formControl}>
 					<InputLabel id='demo-simple-select-label'>More</InputLabel>
 					<Select
@@ -210,18 +212,18 @@ function AssignContent() {
 												marginRight: "10px",
 											}}
 										/>
-										<Link to="/submission">
-											<Button
-												variant="contained"
-												style={{
-													fontSize: "12px",
-													textTransform: "unset",
-													fontWeight: "600",
-													boxShadow: "unset",
-												}}>
-												View Submission
-											</Button>
-										</Link>
+										{/* <Link to="/student/assignment"> */}
+										<Button
+											variant="contained"
+											style={{
+												fontSize: "12px",
+												textTransform: "unset",
+												fontWeight: "600",
+												boxShadow: "unset",
+											}}>
+											<ModalForm />
+										</Button>
+										{/* </Link> */}
 
 										<button
 											style={{

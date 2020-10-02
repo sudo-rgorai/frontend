@@ -156,6 +156,7 @@ function QuizContent() {
 				/>
 			</div>
 			<div className="buttonGroup" style={{ float: "right", marginTop: "3%" }}>
+				{/* <Link to="/student/assignment"> */}
 				<Button
 					variant="outlined"
 					style={{
@@ -168,6 +169,7 @@ function QuizContent() {
 					}}>
 					<QuizModal />
 				</Button>
+				{/* </Link> */}
 				{/* <FormControl className={classes.formControl}>
 					<InputLabel id='demo-simple-select-label'>More</InputLabel>
 					<Select
@@ -214,7 +216,7 @@ function QuizContent() {
 												marginRight: "10px",
 											}}
 										/>
-										<Link to="/submission">
+										<Link to="/student/submission">
 											<Button
 												variant="contained"
 												style={{

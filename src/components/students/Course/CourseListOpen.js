@@ -62,7 +62,7 @@ export default function ImgMediaCard() {
 					label="120"
 					style={{ margin: "2px", borderRadius: "5px" }}
 				/>
-		{/*		<Chip
+				{/*		<Chip
 					icon={<PeopleIcon />}
 					label="3"
 					style={{ margin: "2px", borderRadius: "5px" }}
@@ -77,11 +77,10 @@ export default function ImgMediaCard() {
 					
 				</Button> */}
 
-				<Batch />
-
+				{/* <Batch /> */}
 
 				<hr />
-		{/*		<Chip
+				{/*		<Chip
 					icon={<PersonIcon />}
 					label="BATCH A - 40"
 					style={{ margin: "2px", marginLeft: "20px", borderRadius: "5px" }}
@@ -140,7 +139,7 @@ export default function ImgMediaCard() {
 					label="120"
 					style={{ margin: "2px", borderRadius: "5px" }}
 				/>
-		{/*		<Chip
+				{/*		<Chip
 					icon={<PeopleIcon />}
 					label="3"
 					style={{ margin: "2px", borderRadius: "5px" }}
@@ -210,7 +209,7 @@ export default function ImgMediaCard() {
 					label="120"
 					style={{ margin: "2px", borderRadius: "5px" }}
 				/>
-		{/*
+				{/*
 				<Chip
 					icon={<PeopleIcon />}
 					label="3"
@@ -282,7 +281,7 @@ export default function ImgMediaCard() {
 					label="120"
 					style={{ margin: "2px", borderRadius: "5px" }}
 				/>
-		{/*
+				{/*
 				<Chip
 					icon={<PeopleIcon />}
 					label="3"

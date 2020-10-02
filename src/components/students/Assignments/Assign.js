@@ -153,7 +153,7 @@ function SubmissionContent() {
 				<Breadcrumbs
 					separator={<NavigateNextIcon fontSize="small" />}
 					aria-label="breadcrumb">
-					<Link color="inherit" to="/courses">
+					<Link color="inherit" to="/student/courses">
 						My Courseboard
 					</Link>
 					<Typography
