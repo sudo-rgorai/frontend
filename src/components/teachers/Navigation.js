@@ -12,6 +12,7 @@ import Mail from "../../images/mail.png";
 import Profile from "../../images/profile.png";
 import Settings from "../../images/settings.png";
 import Logout from "../../images/logout.png";
+import Calendar from "../../images/Calender.png"
 
 const drawerWidth = 132;
 
@@ -86,14 +87,14 @@ export default function Navigation() {
 						height="3.8%"
 						src={Course}></img>
 				</Link>
-				<Link className={classes.menuLink} to="/teacher">
+				<Link className={classes.menuLink} to="/teacher/calendar">
 					<img
 						alt=""
 						className={classes.linkIcon}
 						height="3.8%"
-						src={Profile}></img>
+						src={Calendar}></img>
 				</Link>
-				<Link className={classes.menuLink} to="/teacher">
+				{/*<Link className={classes.menuLink} to="/teacher">
 					<img
 						alt=""
 						className={classes.linkIcon}
@@ -113,7 +114,7 @@ export default function Navigation() {
 						className={classes.linkIcon}
 						height="3.8%"
 						src={Logout}></img>
-				</Link>
+				</Link>*/}
 			</div>
 		</Drawer>
 	);
