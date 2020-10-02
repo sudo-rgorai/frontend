@@ -19,6 +19,8 @@ import Grade from "./components/students/GradePortal";
 import PerformAnanlysis from "./components/students/Performance";
 import SubmissionContent from "./components/students/SubmisionContents";
 import Assign from "./components/students/Assignments/Assign";
+import CombinedCalender from "./components/students/Calendar/Combined";
+import CombinedCalendarSchedule from "./components/students/Calendar/CombinedSchedule";
 
 import "./css/NoScrollbar.css";
 
@@ -107,6 +109,12 @@ function AppStudent() {
 							</Route>
 							<Route exact path="/student/courses">
 								<CoursePage />
+							</Route>
+							<Route path="/student/calendar">
+								<CombinedCalender />
+							</Route>
+							<Route path="/calendar/:calendarSchedule">
+								<CombinedCalendarSchedule />
 							</Route>
 						</Switch>
 					</main>
