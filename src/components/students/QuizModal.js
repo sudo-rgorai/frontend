@@ -108,7 +108,7 @@ function TransitionsModal() {
 				}}>
 				<Fade in={open}>
 					<div className={classes.paper1}>
-						<h2 id="transition-modal-title">Create Quiz</h2>
+						<h2 id="transition-modal-title">Upload Quiz</h2>
 
 						<h3 id="transition-modal-description">Quiz 1</h3>
 						<h4 className="topicname">Demo Quiz Name 1</h4>
@@ -205,7 +205,7 @@ function TransitionsModal() {
 									Cancel
 								</Button>
 								<Button variant="contained" color="primary">
-									Create
+									Upload
 								</Button>
 							</div>
 						</div>

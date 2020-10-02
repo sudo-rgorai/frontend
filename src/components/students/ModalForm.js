@@ -92,7 +92,7 @@ function TransitionsModal() {
 	return (
 		<div>
 			<a onClick={handleOpen}>
-				View <br></br> Assignment
+				Upload<br></br> Assignment
 			</a>
 			<Modal
 				aria-labelledby="transition-modal-title"
@@ -107,7 +107,7 @@ function TransitionsModal() {
 				}}>
 				<Fade in={open}>
 					<div className={classes.paper1}>
-						<h2 id="transition-modal-title">Create Assignment</h2>
+						<h2 id="transition-modal-title">Upload Assignment</h2>
 
 						<h3 id="transition-modal-description">Assignment 1</h3>
 						<h4 className="topicname">Demo Assignment Name 1</h4>
@@ -204,7 +204,7 @@ function TransitionsModal() {
 									Cancel
 								</Button>
 								<Button variant="contained" color="primary">
-									Create
+									Upload
 								</Button>
 							</div>
 						</div>
