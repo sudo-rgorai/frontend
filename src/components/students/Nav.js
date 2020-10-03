@@ -96,7 +96,7 @@ export default function Navigation() {
 					style={{ width: "30px" }}
 					src={Groups}></img> */}
 				{/* </Link> */}
-				<Link className={classes.menuLink} to="/student/">
+				<Link className={classes.menuLink} to="/student/calendar">
 					<img
 						alt=""
 						className={classes.linkIcon}

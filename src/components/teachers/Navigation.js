@@ -12,7 +12,7 @@ import Mail from "../../images/mail.png";
 import Profile from "../../images/profile.png";
 import Settings from "../../images/settings.png";
 import Logout from "../../images/logout.png";
-import Calendar from "../../images/Calender.png";
+import Calendar from "../../images/Calender.png"
 
 const drawerWidth = 132;
 
@@ -92,7 +92,6 @@ export default function Navigation() {
 						alt=""
 						className={classes.linkIcon}
 						height="3.8%"
-						style={{ width: "25px" }}
 						src={Calendar}></img>
 				</Link>
 				{/*<Link className={classes.menuLink} to="/teacher">
