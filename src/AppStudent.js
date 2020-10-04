@@ -9,7 +9,7 @@ import { ThemeProvider } from "@material-ui/styles";
 import { amber, blueGrey, red } from "@material-ui/core/colors";
 
 import StudentHome from "./screens/StudentHome";
-import CoursePage from "./screens/CoursePage";
+import CoursePage from "./screens/students/CoursePage";
 
 import Nav from "./components/students/Nav";
 import Resources from "./components/students/Resources";
