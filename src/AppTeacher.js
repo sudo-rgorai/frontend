@@ -91,7 +91,7 @@ export default function AppTeacher() {
 					<Navigation />
 					<main className={classes.content}>
 						<div className={classes.appBarSpacer} />
-						<Container maxWidth="lg" className={classes.container}>
+						<div className={classes.container}>
 							<Switch>
 								<Route path="/teacher/form" component={Modalform}>
 									<Modalform />
@@ -139,7 +139,7 @@ export default function AppTeacher() {
 									<Login />
 								</Route>
 							</Switch>
-						</Container>
+						</div>
 					</main>
 				</div>
 			</Router>

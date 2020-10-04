@@ -87,7 +87,7 @@ function CombinedCalender() {
 	const handleChange1 = (event, newValue) => {
 		setValue(newValue);
 	};
-	const [type, setType] = useState("");
+	const [type, setType] = useState("month");
 	const classes = useStyles();
 	function handleChange(e) {
 		setType(e.target.value);

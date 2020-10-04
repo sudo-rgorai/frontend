@@ -85,7 +85,6 @@ function AppStudent() {
 					<Nav />
 					<main className={classes.content}>
 						<div className={classes.appBarSpacer} />
-						<Container maxWidth="lg" className={classes.container}></Container>
 						<Switch>
 							<Route exact path="/student/">
 								<StudentHome />

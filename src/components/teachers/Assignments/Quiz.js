@@ -225,7 +225,7 @@ function AssignContent() {
 												View Submission
 											</Button>
 										</Link>
-										<button
+										{/*<button
 											style={{
 												borderRadius: "50%",
 												border: "unset",
@@ -233,22 +233,22 @@ function AssignContent() {
 												marginLeft: "20px",
 											}}>
 											<Edit style={{ padding: "4px" }} />
-										</button>
+										</button>*/}
 										<button
 											style={{
 												borderRadius: "50%",
 												border: "unset",
 												marginRight: "10px",
 											}}>
-											<Delete style={{ padding: "4px" }} />
+											<Delete style={{ padding: "7px" }} />
 										</button>
-										<button
+										{/*<button
 											style={{
 												borderRadius: "50%",
 												border: "unset",
 											}}>
 											<MoreVert style={{ padding: "4px" }} />
-										</button>
+										</button>*/}
 									</div>
 								</TableCell>
 							</TableRow>

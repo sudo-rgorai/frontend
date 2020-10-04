@@ -17,9 +17,9 @@ export default function App() {
   return (
     <div>
     <main>
-						
+
             <Router>
-						<Container maxWidth="lg">
+						<div>
 							<Switch>
               <Route exact path="/">
 									<SigninPage />
@@ -34,10 +34,10 @@ export default function App() {
 									<AppParent />
 								</Route>
 							</Switch>
-						</Container>
+						</div>
             </Router>
 </main>
-</div>   
+</div>
     // <div>
     //   {isLoggedIn
     //     ? (userType == "Teacher"
