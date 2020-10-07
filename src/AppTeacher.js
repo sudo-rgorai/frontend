@@ -11,7 +11,7 @@ import { amber, blueGrey, red } from "@material-ui/core/colors";
 
 import TeacherHome from "./screens/TeacherHome";
 import StudentHome from "./screens/StudentHome";
-import CoursePage from "./screens/CoursePage";
+import CoursePage from "./screens/teachers/CoursePage";
 import TopicsPage from "./screens/TopicsPage";
 import SigninPage from "./screens/SigninPage";
 
