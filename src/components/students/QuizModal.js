@@ -60,7 +60,6 @@ const useStyles = makeStyles((theme) => ({
 		padding: theme.spacing(2, 4, 3),
 		outline: "none",
 		width: "35vw",
-		height: "80vh",
 		fontWeight: "400",
 	},
 }));
@@ -93,7 +92,7 @@ function TransitionsModal() {
 	return (
 		<div>
 			<div onClick={handleOpen}>
-				<a onClick={handleOpen}>View Quiz</a>
+				<a onClick={handleOpen}>Upload</a>
 			</div>
 			<Modal
 				aria-labelledby="transition-modal-title"
@@ -122,7 +121,7 @@ function TransitionsModal() {
 							</span>
 						</p>
 
-						<FormControl component="fieldset" className="fieldset">
+						{/*<FormControl component="fieldset" className="fieldset">
 							<FormLabel component="legend" className="legend">
 								Select Application Batches
 							</FormLabel>
@@ -160,7 +159,7 @@ function TransitionsModal() {
 									labelPlacement="end"
 								/>
 							</FormGroup>
-						</FormControl>
+						</FormControl>*/}
 						<div className={classes.root}>
 							<Grid container spacing={1}>
 								<Grid item>
@@ -192,19 +191,20 @@ function TransitionsModal() {
 						</Box>
 
 						<div id="footer">
-							<Button variant="contained" id="back-btn">
+							{/*<Button variant="contained" id="back-btn">
 								<img src={back}></img>
 								BACK
-							</Button>
+							</Button>*/}
 							<div id="button-group">
 								<Button
 									onClick={handleClose}
 									variant="contained"
 									color="warning"
+									style={{backgroundColor: "#F8F8F8"}}
 									id="space">
 									Cancel
 								</Button>
-								<Button variant="contained" color="primary">
+								<Button variant="contained" color="primary" style={{backgroundColor: "#FFDD42"}}>
 									Upload
 								</Button>
 							</div>

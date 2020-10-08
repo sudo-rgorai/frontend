@@ -153,7 +153,7 @@ function AssignContent() {
 					inputProps={{ "aria-label": "search" }}
 				/>
 			</div>
-			<div className="buttonGroup" style={{ float: "right", marginTop: "3%" }}>
+			{/*<div className="buttonGroup" style={{ float: "right", marginTop: "3%" }}>
 				<Link to="/student/submission">
 					<Button
 						variant="outlined"
@@ -166,7 +166,7 @@ function AssignContent() {
 						View Assignment
 					</Button>
 				</Link>
-				{/* <FormControl className={classes.formControl}>
+			 	<FormControl className={classes.formControl}>
 					<InputLabel id='demo-simple-select-label'>More</InputLabel>
 					<Select
 						labelId='demo-simple-select-label'
@@ -181,8 +181,8 @@ function AssignContent() {
 						<MenuItem value={20}>Twenty</MenuItem>
 						<MenuItem value={30}>Thirty</MenuItem>
 					</Select>
-				</FormControl> */}
-			</div>
+				</FormControl>
+			</div>*/}
 			<TableContainer component={Paper} style={{ marginTop: "10%" }}>
 				<Table className={classes.table} aria-label="simple table">
 					<TableHead style={{ backgroundColor: "rgba(222, 231, 238, 0.2)" }}>
@@ -225,13 +225,13 @@ function AssignContent() {
 										</Button>
 										{/* </Link> */}
 
-										<button
+										{/*<button
 											style={{
 												borderRadius: "50%",
 												border: "unset",
 											}}>
 											<MoreVert style={{ padding: "4px" }} />
-										</button>
+										</button>*/}
 									</div>
 								</TableCell>
 								{/*<RadioButtonUnchecked

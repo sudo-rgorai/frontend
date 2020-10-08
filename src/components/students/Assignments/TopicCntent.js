@@ -134,7 +134,7 @@ function AssignContent() {
 				/>
 			</div>
 
-			<div className="buttonGroup" style={{ float: "right", marginTop: "3%" }}>
+			{/*<div className="buttonGroup" style={{ float: "right", marginTop: "3%" }}>
 				<Button
 					variant="outlined"
 					style={{
@@ -161,7 +161,7 @@ function AssignContent() {
 						<MenuItem value={30}>Thirty</MenuItem>
 					</Select>
 				</FormControl>
-			</div>
+			</div>*/}
 			<TableContainer component={Paper} style={{ marginTop: "10%" }}>
 				<Table className={classes.table} aria-label="simple table">
 					<TableHead style={{ backgroundColor: "rgba(222, 231, 238, 0.2)" }}>
@@ -220,7 +220,7 @@ function AssignContent() {
 												marginRight: "20px",
 											}}>
 											<Edit style={{ padding: "4px" }} />
-										</button> 
+										</button>
 										<button
 											style={{
 												borderRadius: "50%",
