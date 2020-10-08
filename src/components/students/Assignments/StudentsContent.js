@@ -158,7 +158,7 @@ function AssignContent() {
 				/>
 			</div>
 			<div className="buttonGroup" style={{ float: "right", marginTop: "3%" }}>
-				<Button
+				{/*<Button
 					variant="outlined"
 					style={{
 						backgroundColor: "gold",
@@ -167,7 +167,7 @@ function AssignContent() {
 						textTransform: "unset",
 					}}>
 					View Students
-				</Button>
+				</Button>*/}
 				{/* <FormControl className={classes.formControl}>
 					<InputLabel id='demo-simple-select-label'>More</InputLabel>
 					<Select
@@ -229,14 +229,14 @@ function AssignContent() {
 												View Performance
 											</Button>
 										</Link>
-										<button
+										{/*<button
 											style={{
 												borderRadius: "50%",
 												border: "unset",
 												marginLeft: "10px",
 											}}>
 											<MoreVert style={{ padding: "4px" }} />
-										</button>
+										</button>*/}
 									</div>
 								</TableCell>
 							</TableRow>
