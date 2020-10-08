@@ -288,6 +288,7 @@ function TransitionsModal() {
 											<Button
 												variant="contained"
 												color="primary"
+												style={{ backgroundColor: "#FFD300" }}
 												onClick={handleClose}>
 												Create
 											</Button>

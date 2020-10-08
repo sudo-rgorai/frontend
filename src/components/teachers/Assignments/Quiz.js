@@ -238,9 +238,10 @@ function AssignContent() {
 											style={{
 												borderRadius: "50%",
 												border: "unset",
-												marginRight: "10px",
+												marginRight: "4px",
+												marginLeft: "5px",
 											}}>
-											<Delete style={{ padding: "7px" }} />
+											<Delete style={{ padding: "5px" }} />
 										</button>
 										{/*<button
 											style={{
